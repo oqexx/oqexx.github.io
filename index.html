@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oqexx Software — Панель Управления</title>
+    <style>
+        body {
+            background-color: #101012; color: #F5F5F7;
+            font-family: 'Segoe UI', -apple-system, sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box;
+        }
+        .main-wrapper { display: none; gap: 20px; width: 860px; max-width: 100%; }
+        .auth-container {
+            background-color: #16161A; width: 360px; padding: 30px;
+            border-radius: 16px; box-shadow: 0 0 30px rgba(127, 0, 255, 0.15);
+            border: 1px solid #242428; text-align: center;
+        }
+        .info-sidebar {
+            background-color: #16161A; width: 300px; padding: 25px; border-radius: 16px;
+            border: 1px solid #242428; box-sizing: border-box; display: flex;
+            flex-direction: column; justify-content: space-between;
+        }
+        .container {
+            background-color: #16161A; flex: 1; padding: 30px; border-radius: 16px;
+            box-shadow: 0 0 30px rgba(127, 0, 255, 0.15); border: 1px solid #242428;
+            text-align: center; box-sizing: border-box;
+        }
+        .brand-title { font-size: 24px; font-weight: 600; margin: 0 0 5px 0; color: #F5F5F7; text-align: left; }
+        .brand-sub { color: #86868B; font-size: 14px; margin: 0 0 20px 0; text-align: left; }
+        .beta-badge {
+            background-color: rgba(127, 0, 255, 0.1); border: 1px solid #7F00FF; color: #7F00FF;
+            font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 20px;
+            display: inline-block; margin-bottom: 15px; letter-spacing: 1px;
+        }
+        .promo-notice {
+            background-color: #101012; border: 1px solid #242428; border-left: 3px solid #7F00FF;
+            border-radius: 8px; padding: 12px; text-align: left; margin-bottom: 20px; font-size: 13px; color: #86868B;
+        }
+        .promo-notice strong { color: #F5F5F7; }
+        .input-group { margin-bottom: 15px; text-align: left; }
+        label { font-size: 12px; color: #86868B; display: block; margin-bottom: 6px; margin-left: 5px; font-weight: 600; }
+        input {
+            width: 100%; background-color: #101012; border: 1px solid #242428; padding: 13px;
+            border-radius: 8px; color: #F5F5F7; font-family: 'Consolas', monospace; font-size: 14px; box-sizing: border-box;
+        }
+        input:focus { border-color: #7F00FF; outline: none; box-shadow: 0 0 8px rgba(127,0,255,0.3); }
+        button {
+            width: 100%; background-color: #16161A; color: #F5F5F7; border: 1px solid #7F00FF;
+            padding: 14px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        button:hover { background-color: #7F00FF; box-shadow: 0 0 15px rgba(127,0,255,0.4); }
+        .auth-toggle { font-size: 13px; color: #86868B; margin-top: 15px; cursor: pointer; display: inline-block; }
+        .auth-toggle:hover { color: #7F00FF; text-decoration: underline; }
+        .result-box { margin-top: 25px; display: none; text-align: left; }
+        .key-display {
+            background-color: #101012; border: 1px solid #00FF66; color: #00FF66;
+            padding: 12px; border-radius: 8px; font-family: 'Consolas', monospace; font-weight: bold; text-align: center; font-size: 15px;
+        }
+        .status-item { margin-bottom: 14px; font-size: 14px; text-align: left; }
+        .status-label { color: #86868B; display: block; font-size: 11px; margin-bottom: 2px; font-weight: 600; }
+        .status-value { font-weight: 600; }
+        .admin-panel {
+            background-color: #101012; border: 1px solid #E81123; border-radius: 12px;
+            padding: 15px; margin-top: 20px; text-align: left; display: none;
+        }
+        .admin-title { font-size: 13px; color: #E81123; font-weight: bold; margin-bottom: 10px; }
+        .freeze-btn {
+            background-color: #16161A; color: #E81123; border: 1px solid #E81123;
+            padding: 10px; border-radius: 6px; font-size: 12px; font-weight: bold; width: 100%; cursor: pointer; transition: 0.2s;
+        }
+        .freeze-btn:hover { background-color: #E81123; color: white; }
+        .history-box { margin-top: 20px; text-align: left; border-top: 1px solid #242428; padding-top: 15px; display: none; }
+        .history-title { font-size: 12px; color: #86868B; margin-bottom: 8px; font-weight: 600; }
+        .history-item {
+            background-color: #101012; padding: 8px 12px; border-radius: 6px; font-family: 'Consolas', monospace;
+            font-size: 12px; color: #86868B; margin-bottom: 6px; border-left: 2px solid #7F00FF;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .copy-link { color: #7F00FF; cursor: pointer; font-weight: bold; }
+        .support-btn {
+            background-color: #101012; border: 1px solid #242428; color: #86868B;
+            padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: 600;
+            display: block; transition: 0.2s; margin-bottom: 8px; width: 100%; box-sizing: border-box;
+        }
+        .support-btn:hover { border-color: #7F00FF; color: #F5F5F7; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="auth-container" id="authBlock">
+    <div class="beta-badge">BETA TEST</div>
+    <h2 id="authTitle" style="margin-top:0; font-size: 22px; color: #F5F5F7;">Авторизация</h2>
+    <p id="authDesc" style="margin-bottom:20px; color: #86868B; font-size: 14px;">Войдите в личный кабинет софта oqexx</p>
+    <div class="input-group">
+        <label>Введите логин:</label>
+        <input type="text" id="username" placeholder="Ваш никнейм" autocomplete="off">
+    </div>
+    <div class="input-group">
+        <label>Введите пароль:</label>
+        <input type="password" id="password" placeholder="••••••••">
+    </div>
+    <button id="authBtn" onclick="processAuth()">ВОЙТИ В ПАНЕЛЬ</button>
+    <div class="auth-toggle" id="authToggle" onclick="toggleAuthMode()">Создать новый аккаунт (Регистрация)</div>
+</div>
+
+<div class="main-wrapper" id="mainBlock">
+    <div class="info-sidebar">
+        <div>
+            <div class="status-item"><span class="status-label">РЕЖИМ СИСТЕМЫ:</span><span class="status-value" style="color: #7F00FF;">ОТКРЫТЫЙ БЕТА-ТЕСТ</span></div>
+            <div class="status-item"><span class="status-label">СТАТУС СЕРВЕРОВ ХЭШИРОВАНИЯ:</span><span class="status-value" id="serverStatusText" style="color:#00FF66;">● СЕРВЕРА СИНХРОНИЗИРОВАНЫ</span></div>
+            <div class="status-item"><span class="status-label">ВЕРСИЯ БИНДЕРА НА СЕРВЕРЕ:</span><span class="status-value">v4.5 PRO (Luxury Edition)</span></div>
+            <div class="status-item"><span class="status-label">ЗАГРУЖЕННОСТЬ СЛОТОВ БЕТА-ТЕСТА:</span><span class="status-value" style="color: #FFB900;">14 / 50 мест занято</span></div>
+        </div>
+        <div>
+            <div class="admin-panel" id="adminPanel">
+                <div class="admin-title">⚙️ УПРАВЛЕНИЕ ПРОЕКТОМ (@oqexx)</div>
+                <button class="freeze-btn" id="freezeBtn" onclick="toggleFreezeProject()">🔴 ЗАМОРОЗИТЬ ПРОЕКТ</button>
+            </div>
+            <div class="status-item" style="margin-top: 15px; margin-bottom: 15px;">
+                <span class="status-label">ТЕКУЩАЯ СЕССИЯ:</span><span class="status-value" id="userDisplay" style="color: #7F00FF;">User</span>
+            </div>
+            <button class="support-btn" onclick="sendMailSupport()">✉️ Написать разработчику</button>
+            <button class="support-btn" style="border-color:#E81123; color:#E81123;" onclick="logout()">Выйти из кабинета</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="brand-title">Oqexx software</div>
+        <div class="brand-sub" id="brandSubText">Генерация коммерческих лицензий по купонам подписки</div>
+        <div class="promo-notice" id="promoNoticeBox">
+            ⚠️ <strong>Информация для участников тестирования:</strong> На этапе ОБТ активация биндера производится <strong>абсолютно бесплатно</strong>. Все активные купоны подписки публикуются в Дискорде!
+        </div>
+        <div class="input-group">
+            <label>Вставьте ваш уникальный HWID из софта:</label>
+            <input type="text" id="hwidInput" placeholder="СКОПИРУЕТСЯ В БУФЕР АВТОМАТИЧЕСКИ ПРИ СТАРТЕ БИНДЕРА" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <label>Введите ПИН-код купона подписки:</label>
+            <input type="text" id="pinInput" placeholder="ПРИМЕР: OQEXX-FREE-30DAYS" autocomplete="off">
+        </div>
+        <button id="activateBtn" onclick="activateKey()">АКТИВИРОВАТЬ И СГЕНЕРИРОВАТЬ КЛЮЧ</button>
+        <div class="result-box" id="resultBox">
+            <label>Ваш готовый Ключ Подписки (вставьте в окно софта):</label>
+            <div class="key-display" id="keyDisplay">XXXXX-XXXXXXXX</div>
+        </div>
+        <div class="history-box" id="historyBox">
+            <div class="history-title">ИСТОРИЯ ВАШИХ ЛИЦЕНЗИОННЫХ КЛЮЧЕЙ:</div>
+            <div id="historyList"></div>
+        </div>
+    </div>
+</div>
+<script>
+    function getHash(s) {
+        let hash = 5381;
+        for (let i = 0; i < s.length; i++) {
+            hash = ((hash << 5) + hash) + s.charCodeAt(i);
+            hash = hash & 0xFFFFFFFF;
+        }
+        return (hash >>> 0).toString(16).toUpperCase().padStart(8, '0');
+    }
+
+    let defaultCoupons = {
+        "OQEXX-FREE-30DAYS": 30,
+        "OQEXX-BETA-30DAYS": 30,
+        "OQEXX-OPEN-OBT": 30,
+        "OQEXX-TEST-5DAYS": 5,
+        "OQEXX-VIP-YEAR": 365
+    };
+
+    let isRegisterMode = false;
+    let currentUser = "";
+
+    if (!localStorage.getItem("oqexx_coupons")) localStorage.setItem("oqexx_coupons", JSON.stringify(defaultCoupons));
+    if (!localStorage.getItem("oqexx_users")) {
+        let iu = {}; iu["oqexx"] = getHash("admin123"); localStorage.setItem("oqexx_users", JSON.stringify(iu));
+    }
+    if (!localStorage.getItem("oqexx_global_freeze")) localStorage.setItem("oqexx_global_freeze", "false");
+    
+    let couponDatabase = JSON.parse(localStorage.getItem("oqexx_coupons"));
+
+    window.onload = function() {
+        let ss = localStorage.getItem("oqexx_session");
+        if (ss) { currentUser = ss; openDashboard(); }
+    };
+
+    function toggleAuthMode() {
+        isRegisterMode = !isRegisterMode;
+        let t = document.getElementById("authTitle"), d = document.getElementById("authDesc"), b = document.getElementById("authBtn"), g = document.getElementById("authToggle");
+        if (isRegisterMode) {
+            t.innerText = "Регистрация"; d.innerText = "Создайте новый аккаунт oqexx"; b.innerText = "ЗАРЕГИСТРИРОВАТЬСЯ"; g.innerText = "У меня уже есть аккаунт (Войти)";
+        } else {
+            t.innerText = "Авторизация"; d.innerText = "Войдите в личный кабинет софта oqexx"; b.innerText = "ВОЙТИ В ПАНЕЛЬ"; g.innerText = "Создать новый аккаунт (Регистрация)";
+        }
+    }
+
+    function processAuth() {
+        let u = document.getElementById("username").value.trim().toLowerCase(), p = document.getElementById("password").value.trim(), users = JSON.parse(localStorage.getItem("oqexx_users"));
+        if (!u || !p) { alert("Ошибка: Заполните все поля!"); return; }
+        if (isRegisterMode) {
+            if (u === "oqexx") { alert("Ошибка: Ник разработчика зарезервирован!"); return; }
+            if (users.hasOwnProperty(u)) { alert("Ошибка: Логин занят!"); return; }
+            users[u] = getHash(p); localStorage.setItem("oqexx_users", JSON.stringify(users)); alert("Успешно зарегистрировано!"); toggleAuthMode();
+        } else {
+            if (u === "oqexx" && p === "admin123") { currentUser = "oqexx"; localStorage.setItem("oqexx_session", "oqexx"); openDashboard(); return; }
+            if (!users.hasOwnProperty(u) || users[u] !== getHash(p)) { alert("Ошибка: Неверный логин или пароль!"); return; }
+            currentUser = u; localStorage.setItem("oqexx_session", u); openDashboard();
+        }
+    }
+
+    function openDashboard() {
+        document.getElementById("authBlock").style.display = "none"; document.getElementById("mainBlock").style.display = "flex"; document.getElementById("userDisplay").innerText = currentUser;
+        let ap = document.getElementById("adminPanel"); if (currentUser === "oqexx") { ap.style.display = "block"; updateAdminButtonUI(); } else { ap.style.display = "none"; }
+        applyGlobalFreezeUI(); renderHistory();
+    }
+
+    function toggleFreezeProject() {
+        if (currentUser !== "oqexx") return;
+        let cs = localStorage.getItem("oqexx_global_freeze");
+        if (cs === "true") {
+            localStorage.setItem("oqexx_global_freeze", "false");
+            downloadFreezeFile("FALSE"); // Создаем команду разморозки для биндера
+            alert("Проект успешно разморожен! Перезалейте скачанный файл freeze_status.txt на GitHub.");
+        } else {
+            if (!confirm("Заморозить проект для всего интернета и БИНДЕРА?")) return;
+            localStorage.setItem("oqexx_global_freeze", "true");
+            downloadFreezeFile("TRUE"); // Создаем команду заморозки для биндера
+            alert("Проект ЗАМОРОЖЕН! Перезалейте скачанный файл freeze_status.txt на GitHub, чтобы биндеры у всех вылетели.");
+        }
+        updateAdminButtonUI(); applyGlobalFreezeUI();
+    }
+
+    // НОВАЯ АДМИН-ФУНКЦИЯ: Автоматическое скачивание триггер-файла для Гитхаба
+    function downloadFreezeFile(textValue) {
+        let blob = new Blob([textValue], { type: "text/plain" });
+        let anchor = document.createElement("a");
+        anchor.download = "freeze_status.txt";
+        anchor.href = window.URL.createObjectURL(blob);
+        anchor.target = "_blank";
+        anchor.style.display = "none";
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+    }
+
+    function updateAdminButtonUI() {
+        let fb = document.getElementById("freezeBtn"), ifz = localStorage.getItem("oqexx_global_freeze") === "true";
+        fb.innerText = ifz ? "🟢 РАЗМОРОЗИТЬ ПРОЕКТ" : "🔴 ЗАМОРОЗИТЬ ПРОЕКТ";
+        fb.style.borderColor = ifz ? "#00FF66" : "#E81123"; fb.style.color = ifz ? "#00FF66" : "#E81123";
+    }
+
+    function applyGlobalFreezeUI() {
+        let ifz = localStorage.getItem("oqexx_global_freeze") === "true", st = document.getElementById("serverStatusText"), ab = document.getElementById("activateBtn"), nb = document.getElementById("promoNoticeBox"), sbt = document.getElementById("brandSubText");
+        if (ifz) {
+            st.innerText = "● ЗАМОРОЗЕН / ТЕХ. РАБОТЫ"; st.style.color = "#E81123";
+            if (currentUser !== "oqexx") {
+                ab.disabled = true; ab.innerText = "ГЕНЕРАЦИЯ ЗАБЛОКИРОВАНА РАЗРАБОТЧИКОМ"; ab.style.borderColor = "#242428"; ab.style.color = "#86868B"; ab.style.cursor = "not-allowed";
+                nb.innerHTML = "🛑 <strong>Внимание:</strong> Администратор <strong>@oqexx</strong> приостановил бета-тест. Функции создания лицензий временно заморожены."; nb.style.borderLeftColor = "#E81123";
+                sbt.innerText = "Работа серверов временно приостановлена"; sbt.style.color = "#E81123";
+            }
+        } else {
+            st.innerText = "● СЕРВЕРА СИНХРОНИЗИРОВАНЫ"; st.style.color = "#00FF66"; ab.disabled = false; ab.innerText = "АКТИВИРОВАТЬ И СГЕНЕРИРОВАТЬ КЛЮЧ"; ab.style.borderColor = "#7F00FF"; ab.style.color = "#F5F5F7"; ab.style.cursor = "pointer";
+            nb.innerHTML = "⚠️ <strong>Информация:</strong> На этапе ОБТ активация производится <strong>абсолютно бесплатно</strong>. Все активные купоны подписки публикуются в Дискорде!"; nb.style.borderLeftColor = "#7F00FF";
+            sbt.innerText = "Генерация коммерческих лицензий по купонам подписки"; sbt.style.color = "#86868B";
+        }
+    }
+
+    function logout() { localStorage.removeItem("oqexx_session"); currentUser = ""; document.getElementById("mainBlock").style.display = "none"; document.getElementById("authBlock").style.display = "block"; if (isRegisterMode) toggleAuthMode(); };
+    
+    function sendMailSupport() {
+        let msg = prompt("Введите текст обращения к Никите (оно улетит на вашу почту):"); if (!msg || !msg.trim()) return;
+        let url = "https://google.com" + encodeURIComponent("deskovnikita181@gmail.com") + "&su=" + encodeURIComponent("Oqexx Support Ticket") + "&body=" + encodeURIComponent("Пользователь: " + currentUser + "\n\nТекст:\n" + msg.trim());
+        window.open(url, "_blank");
+    }
+
+    function activateKey() {
+        if (localStorage.getItem("oqexx_global_freeze") === "true" && currentUser !== "oqexx") { alert("Ошибка: Проект заморожен!"); return; }
+        let hw = document.getElementById('hwidInput').value.trim().toUpperCase(), pn = document.getElementById('pinInput').value.trim().toUpperCase();
+        if (!hw || !pn) { alert("Ошибка: Заполните все поля ввода!"); return; }
+        hw = hw.replace(/DEFAULT_STRING|[^A-Z0-9]/g, "");
+        if (!couponDatabase.hasOwnProperty(pn)) { alert("Ошибка: Неверный или использованный купон подписки!"); return; }
+        let days = couponDatabase[pn]; delete couponDatabase[pn]; localStorage.setItem("oqexx_coupons", JSON.stringify(couponDatabase));
+        let d = new Date(); d.setDate(d.getDate() + days);
+        let ex = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+        let fk = getHash(hw + ex).toString(16).toUpperCase().padStart(8, '0') + "-" + ex;
+        document.getElementById('keyDisplay').innerText = fk; document.getElementById('resultBox').style.display = "block";
+        saveToHistory(fk, days); navigator.clipboard.writeText(fk); alert("Успешно! Ключ лицензии создан и скопирован в буфер.");
+    }
+
+    function saveToHistory(k, d) { let hk = "oqexx_h_" + currentUser, h = localStorage.getItem(hk) ? JSON.parse(localStorage.getItem(hk)) : []; h.unshift({key: k, days: d}); if (h.length > 3) h.pop(); localStorage.setItem(hk, JSON.stringify(h)); renderHistory(); };
+    function renderHistory() {
+        let hk = "oqexx_h_" + currentUser, h = localStorage.getItem(hk) ? JSON.parse(localStorage.getItem(hk)) : [], ld = document.getElementById("historyList"), bd = document.getElementById("historyBox");
+        if (h.length === 0) { bd.style.display = "none"; return; } bd.style.display = "block"; ld.innerHTML = "";
+        h.forEach(function(i) { ld.innerHTML += `<div class="history-item"><span>${i.key} (${i.days} дн.)</span><span class="copy-link" onclick="navigator.clipboard.writeText('${i.key}');alert('Скопировано!');">Копировать</span></div>`; });
+    };
+</script>
