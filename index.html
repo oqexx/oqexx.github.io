@@ -161,8 +161,8 @@
         return (hash >>> 0).toString(16).toUpperCase().padStart(8, '0');
     }
 
-        let defaultCoupons = {
-      "OQEXX-BETA-30DAYS": 30,
+let defaultCoupons = {
+    "OQEXX-BETA-30DAYS": 30,
     "OQEXX-OPEN-OBT": 30,
     "OQEXX-TEST-5DAYS": 5,
     "OQEXX-VIP-YEAR": 365,
@@ -180,24 +180,19 @@
     "OQEXX-10D-X7R9": 10,
     "OQEXX-10D-P2W1": 10,
     "OQEXX-10D-B6N3": 10
-);
+};
 
 let isRegisterMode = false;
 let currentUser = "";
 
 let couponsVersion = '2';
-    
- if (localStorage.getItem("oqexx_coupons_version") !== couponsVersion) {
+
+if (localStorage.getItem("oqexx_coupons_version") !== couponsVersion) {
     localStorage.setItem("oqexx_coupons", JSON.stringify(defaultCoupons));
     localStorage.setItem("oqexx_coupons_version", couponsVersion);
 }
 
-    if (!localStorage.getItem("oqexx_users")) {
-        let iu = {}; iu["oqexx"] = getHash("admin123"); localStorage.setItem("oqexx_users", JSON.stringify(iu));
-    }
-    if (!localStorage.getItem("oqexx_global_freeze")) localStorage.setItem("oqexx_global_freeze", "false");
-    
-    let couponDatabase = JSON.parse(localStorage.getItem("oqexx_coupons"));
+let couponDatabase = JSON.parse(localStorage.getItem("oqexx_coupons"));
 
     window.onload = function() {
         let ss = localStorage.getItem("oqexx_session");
