@@ -307,5 +307,5 @@ let couponDatabase = JSON.parse(localStorage.getItem("oqexx_coupons"));
         let hk = "oqexx_h_" + currentUser, h = localStorage.getItem(hk) ? JSON.parse(localStorage.getItem(hk)) : [], ld = document.getElementById("historyList"), bd = document.getElementById("historyBox");
         if (h.length === 0) { bd.style.display = "none"; return; } bd.style.display = "block"; ld.innerHTML = "";
         h.forEach(function(i) { ld.innerHTML += `<div class="history-item"><span>${i.key} (${i.days} дн.)</span><span class="copy-link" onclick="navigator.clipboard.writeText('${i.key}');alert('Скопировано!');">Копировать</span></div>`; });
-    };
+    }
 </script>
