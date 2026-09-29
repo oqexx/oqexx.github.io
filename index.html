@@ -181,7 +181,12 @@
     let isRegisterMode = false;
     let currentUser = "";
 
-    if (!localStorage.getItem("oqexx_coupons")) localStorage.setItem("oqexx_coupons", JSON.stringify(defaultCoupons));
+        let couponsVersion = '1'; 
+    if (localStorage.getItem("oqexx_coupons_version") !== couponsVersion) {
+        localStorage.setItem("oqexx_coupons", JSON.stringify(defaultCoupons));
+        localStorage.setItem("oqexx_coupons_version", couponsVersion);
+    }
+
     if (!localStorage.getItem("oqexx_users")) {
         let iu = {}; iu["oqexx"] = getHash("admin123"); localStorage.setItem("oqexx_users", JSON.stringify(iu));
     }
