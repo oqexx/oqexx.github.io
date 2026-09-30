@@ -196,20 +196,34 @@
 
         <div class="dashboard-grid">
             <div class="sidebar">
-                <div class="profile-container" style="padding: 15px; border-radius: 10px; display: flex; flex-direction: column; align-items: center;">
-    <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="uploadAvatar(this.files[0])">
-    <div class="avatar-wrapper" onclick="openAvatarViewModel()">
-        <img id="avatarDisplay" class="avatar-img" src="data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 24 24' fill='%237e8799'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>">
-        <div class="avatar-hint">Просмотр</div>
+                <div class="profile-container" style="padding: 20px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; background: #1a1a1a; gap: 10px;">
+    <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="uploadAvatar(this.files)">
+    
+    <!-- Аватарка (кликая на неё, открывается оверлей) -->
+    <div class="avatar-wrapper" onclick="openAvatarViewModel()" style="cursor: pointer; position: relative;">
+        <img id="avatarDisplay" class="avatar-img" src="data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 24 24' fill='%237e8799'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+        <div class="avatar-hint" style="position: absolute; bottom: 0; background: rgba(0,0,0,0.6); width: 100%; text-align: center; color: #fff; font-size: 10px; padding: 2px 0; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;">Смотреть</div>
     </div>
-    <div id="userLabel" class="nickname-display" onclick="uiPrompt('Изменение никнейма', 'Введите новый никнейм:', handleNicknameChange)" style="cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 10px;"></div>
+    
+    <!-- Кнопка "Изменить аватар" прямо под ней -->
+    <button class="btn-primary" onclick="document.getElementById('avatarInput').click()" style="font-size: 11px; padding: 3px 8px;">Изменить аватар</button>
+
+    <!-- Никнейм -->
+    <div id="userLabel" class="nickname-display" onclick="uiPrompt('Изменение никнейма', 'Введите новый никнейм:', handleNicknameChange)" style="cursor: pointer; font-weight: bold; font-size: 18px; color: #fff; margin-top: 5px;"></div>
+    
+    <!-- Баланс коинов (клик сюда открывает ввод КУПОНА) -->
+    <div id="coinBalance" onclick="promptActivateCoinCoupon()" style="font-size: 15px; color: #f1c40f; font-weight: bold; cursor: pointer; padding: 4px 10px; background: rgba(241,196,15,0.1); border-radius: 5px; border: 1px dashed #f1c40f;" title="Нажмите, чтобы ввести купон">0 🪙</div>
+    
+    <!-- Описание профиля -->
+    <div id="userDescription" style="font-size: 13px; color: #bbb; font-style: italic; text-align: center; word-break: break-all; max-width: 150px;">Нет описания</div>
     
     <!-- Кнопки магазина кастомизации -->
-    <div class="shop-buttons" style="margin-top: 10px; display: flex; gap: 5px;">
-        <button class="btn-primary" onclick="promptBuyBackground()" style="font-size: 11px; padding: 4px 8px;">Цвет фона (100 🪙)</button>
-        <button class="btn-primary" onclick="promptBuyDescription()" style="font-size: 11px; padding: 4px 8px;">Описание (50 🪙)</button>
+    <div class="shop-buttons" style="margin-top: 5px; display: flex; gap: 8px;">
+        <button class="btn-primary" onclick="promptBuyBackground()" style="font-size: 11px; padding: 5px 10px;">Фон (100 🪙)</button>
+        <button class="btn-primary" onclick="promptBuyDescription()" style="font-size: 11px; padding: 5px 10px;">Статус (50 🪙)</button>
     </div>
 </div>
+
 
                 <div id="serverStatusText" class="status-panel">Сервера синхронизированы</div>
                 
@@ -545,34 +559,23 @@ function openDashboard() {
     }
     
     let ap = document.getElementById("adminControls");
-    if (currentUser === "oqexx") { ap.style.display = "block"; updateAdminButtonUI(); } else { ap.style.display = "none"; }
-    
-    document.getElementById("statRole").innerText = currentUser === "oqexx" ? "Owner" : "Beta";
-    applyGlobalFreezeUI();
-    if (typeof renderHistory === "function") renderHistory();
-
-    // Авто-создание блоков под никнеймом для отображения коинов и описания профиля
-    let container = document.querySelector(".profile-container");
-    if (container) {
-        if (!document.getElementById("coinBalance")) {
-            let coinDiv = document.createElement("div");
-            coinDiv.id = "coinBalance";
-            coinDiv.style = "font-size: 16px; color: #f1c40f; margin: 5px 0; font-weight: bold; cursor: pointer; text-align: center;";
-            coinDiv.title = "Нажмите, чтобы активировать купон";
-            coinDiv.onclick = promptActivateCoinCoupon;
-            container.appendChild(coinDiv);
-        }
-        if (!document.getElementById("userDescription")) {
-            let descDiv = document.createElement("div");
-            descDiv.id = "userDescription";
-            descDiv.style = "font-size: 13px; color: #bbb; margin: 5px 0; font-style: italic; text-align: center; word-break: break-all; padding: 0 10px;";
-            container.appendChild(descDiv);
-        }
+    if (currentUser === "oqexx") { 
+        if (ap) ap.style.display = "block"; 
+        if (typeof updateAdminButtonUI === "function") updateAdminButtonUI(); 
+    } else { 
+        if (ap) ap.style.display = "none"; 
     }
+    
+    let roleEl = document.getElementById("statRole");
+    if (roleEl) roleEl.innerText = currentUser === "oqexx" ? "Owner" : "Beta";
+    
+    if (typeof applyGlobalFreezeUI === "function") applyGlobalFreezeUI();
+    if (typeof renderHistory === "function") renderHistory();
 
     updateCoinsUI();
     applyCustomization();
 }
+
 
 
 function downloadFreezeFile(textValue) {
