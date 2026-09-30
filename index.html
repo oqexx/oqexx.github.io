@@ -238,7 +238,30 @@
     animation: rgbGlow 4s linear infinite !important;
     border-width: 3px !important;
 }
-    
+ /* Анимация живого космического фона профиля */
+@keyframes cyberGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.live-bg-cyber {
+    background: linear-gradient(-45deg, #15171e, #1c2234, #2c1e3d, #1a2636, #382323) !important;
+    background-size: 400% 400% !important;
+    animation: cyberGradient 8s ease infinite !important;
+}
+
+/* Анимация переливающейся RGB-обводки для аватарки */
+@keyframes rgbGlow {
+    0% { border-color: #ff5555 !important; box-shadow: 0 0 12px #ff5555 !important; }
+    33% { border-color: #55ff55 !important; box-shadow: 0 0 12px #55ff55 !important; }
+    66% { border-color: #5555ff !important; box-shadow: 0 0 12px #5555ff !important; }
+    100% { border-color: #ff5555 !important; box-shadow: 0 0 12px #ff5555 !important; }
+}
+.live-avatar-rgb {
+    animation: rgbGlow 3s linear infinite !important;
+    border: 3px solid #ff5555 !important;
+}
+   
     </style>
 </head>
 <body>
@@ -830,6 +853,11 @@ function promptBuyBackground() {
         applyCustomization();
         uiAlert("Успешно", "RGB обводка аватарки успешно куплена!");
     };
+}
+function promptBuyDescription() {
+    customPrompt("Покупка статуса профиля", "Введите новое описание вашего профиля. Цена: 50 коинов.", function(desc) {
+        buyCustomization(50, "desc", desc);
+    });
 }
 
 
