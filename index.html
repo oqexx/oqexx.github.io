@@ -602,17 +602,18 @@ window.onload = function() {
 };
 
 function uploadAvatar(files) {
-    // Так как на строке 200 передано `this.files[0]`, 
-    // переменная `files` — это уже и есть нужный нам файл.
-    let file = files;
-    
-    if (!file) return;
+    if (!files || files.length === 0) return;
+    let file = files[0]; // Берем самый первый файл из выбранных
 
     let reader = new FileReader();
     reader.onloadend = function() {
         localStorage.setItem("oqexx_avatar_" + currentUser, reader.result);
         document.getElementById("avatarDisplay").src = reader.result;
-        uiAlert("Успешно", "Ваша новая аватарка успешно загружена и сохранена в профиле!");
+        if (typeof uiAlert === "function") {
+            uiAlert("Успешно", "Ваша новая аватарка успешно загружена и сохранена в профиле!");
+        } else {
+            alert("Ваша новая аватарка успешно загружена и сохранена в профиле!");
+        }
     }
     reader.readAsDataURL(file);
 }
