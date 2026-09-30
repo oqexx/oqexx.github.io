@@ -445,6 +445,23 @@ function openAvatarViewModal() {
     document.getElementById("modalAvatarImg").src = currentSrc;
     openModalOverlay("avatarViewModal");
 }
+// Исправленная функция покупки с поддержкой всех типов кастомизации
+function buyCustomization(cost, type, value) {
+    let balance = getCoins();
+    if (balance < cost) {
+        uiAlert("Ошибка", "Недостаточно коинов! Активируйте купоны.");
+        return false;
+    }
+    
+    localStorage.setItem("oqexx_coins_" + currentUser, balance - cost);
+    localStorage.setItem("oqexx_" + type + "_" + currentUser, value);
+    updateCoinsUI();
+    applyCustomization();
+    uiAlert("Успешно", "Эффект успешно куплен и применен!");
+    return true;
+}
+
+// Исправленное и точное применение эффектов
 function applyCustomization() {
     let bg = localStorage.getItem("oqexx_bg_" + currentUser) || "#15171e";
     let desc = localStorage.getItem("oqexx_desc_" + currentUser) || "Нет описания";
@@ -463,17 +480,19 @@ function applyCustomization() {
     let descEl = document.getElementById("userDescription");
     if (descEl) descEl.innerText = desc;
 
-    let avatarWrapper = document.querySelector(".avatar-wrapper");
-    if (avatarWrapper) {
-        avatarWrapper.classList.remove("live-avatar-rgb");
+    // Четкая активация RGB-обводки на саму аватарку
+    let avatarImg = document.getElementById("avatarDisplay");
+    if (avatarImg) {
+        avatarImg.classList.remove("live-avatar-rgb");
         if (borderStyle === "rgb") {
-            avatarWrapper.classList.add("live-avatar-rgb");
+            avatarImg.classList.add("live-avatar-rgb");
         } else {
-            avatarWrapper.style.borderColor = "#2e3446";
-            avatarWrapper.style.boxShadow = "none";
+            avatarImg.style.border = "none";
+            avatarImg.style.boxShadow = "none";
         }
     }
 }
+
 
 function closeAvatarViewModal() { closeModalOverlay("avatarViewModal"); }
 
@@ -791,37 +810,47 @@ function promptBuyBackground() {
     overlay.className = "custom-prompt-overlay";
     
     overlay.innerHTML = `
-        <div class="custom-prompt-box" style="max-width: 450px;">
-            <h3 class="custom-prompt-title">🎨 Магазин кастомизации</h3>
-            <p class="custom-prompt-text">Выберите готовый стиль фона (100 🪙) или уникальные живые эффекты:</p>
+        <div class="custom-prompt-box" style="max-width: 420px; background: #0b0c10; border: 1px solid #1f2330; padding: 20px; border-radius: 16px; box-sizing: border-box;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; width: 100%;">
+                <h3 class="custom-prompt-title" style="font-size: 20px; color: #fff; font-weight: 800; letter-spacing: 0.5px; margin: 0;">👑 PREMIUM SHOP</h3>
+                <span style="color: #ffb11b; font-weight: 700; font-size: 14px; background: rgba(255,177,27,0.1); padding: 4px 10px; border-radius: 8px;">Баланс: ${getCoins()} 🪙</span>
+            </div>
+            <p class="custom-prompt-text" style="color: #626f82; font-size: 13px; margin: 0 0 15px 0; width: 100%;">Кастомизация личного кабинета под твой уникальный стиль.</p>
             
-            <!-- Сетка готовых цветов -->
-            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 10px 0;">
-                <div onclick="window._selBg('#15171e')" style="background:#15171e; height:35px; border-radius:6px; cursor:pointer; border:1px solid #333;" title="Дефолтный"></div>
-                <div onclick="window._selBg('#1c2234')" style="background:#1c2234; height:35px; border-radius:6px; cursor:pointer;" title="Темно-синий"></div>
-                <div onclick="window._selBg('#2c1e3d')" style="background:#2c1e3d; height:35px; border-radius:6px; cursor:pointer;" title="Фиолетовый"></div>
-                <div onclick="window._selBg('#16352b')" style="background:#16352b; height:35px; border-radius:6px; cursor:pointer;" title="Изумрудный"></div>
-                <div onclick="window._selBg('#382323')" style="background:#382323; height:35px; border-radius:6px; cursor:pointer;" title="Бордовый"></div>
+            <h4 style="color: #adbac7; font-size: 13px; margin: 0 0 8px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; align-self: flex-start;">Постоянные цвета (100 🪙)</h4>
+            <!-- Красивые круглые кнопки палитры -->
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; justify-content: space-between; background: #12141c; padding: 10px; border-radius: 10px; border: 1px solid #1c1f2b; width: 100%; box-sizing: border-box;">
+                <div onclick="window._selBg('#15171e')" style="background:#15171e; width:36px; height:36px; border-radius:50%; cursor:pointer; border:2px solid #32384e;" title="Стандартный"></div>
+                <div onclick="window._selBg('#1c2234')" style="background:#1c2234; width:36px; height:36px; border-radius:50%; cursor:pointer; border:2px solid transparent;" title="Синий"></div>
+                <div onclick="window._selBg('#2c1e3d')" style="background:#2c1e3d; width:36px; height:36px; border-radius:50%; cursor:pointer; border:2px solid transparent;" title="Фиолетовый"></div>
+                <div onclick="window._selBg('#16352b')" style="background:#16352b; width:36px; height:36px; border-radius:50%; cursor:pointer; border:2px solid transparent;" title="Зеленый"></div>
+                <div onclick="window._selBg('#382323')" style="background:#382323; width:36px; height:36px; border-radius:50%; cursor:pointer; border:2px solid transparent;" title="Красный"></div>
             </div>
             
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-                <!-- Кнопка живого фона -->
-                <button class="custom-prompt-btn primary" onclick="window._selBg('live_cyber')" style="background: linear-gradient(-45deg, #ff5555, #55ff55, #5555ff); border: none; padding: 10px; font-weight: bold; cursor: pointer; border-radius: 6px;">
-                    🌌 Включить живой фон (150 🪙)
-                </button>
+            <h4 style="color: #adbac7; font-size: 13px; margin: 0 0 8px 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; align-self: flex-start;">Анимированные эффекты</h4>
+            <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                <!-- Элемент живого фона -->
+                <div onclick="window._selBg('live_cyber')" style="background: #12141c; border: 1px solid #222634; padding: 12px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;" onmouseover="this.style.borderColor='#ff5555'" onmouseout="this.style.borderColor='#222634'">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="background: linear-gradient(-45deg, #ff5555, #55ff55, #5555ff); width: 12px; height: 12px; border-radius: 50%;"></div>
+                        <span style="color: #fff; font-size: 13px; font-weight: 600;">Живой космический фон</span>
+                    </div>
+                    <span style="color: #ffb11b; font-weight: 700; font-size: 13px;">150 🪙</span>
+                </div>
                 
-                <!-- Кнопка RGB обводки -->
-                <button class="custom-prompt-btn primary" onclick="window._buyBorder('rgb')" style="background: #0d1117; border: 1px dashed #ff5555; color: #fff; padding: 10px; font-weight: bold; cursor: pointer; border-radius: 6px;">
-                    🌈 Купить RGB обводку на аву (200 🪙)
-                </button>
-                
-                <button class="custom-prompt-btn primary" onclick="window._buyBorder('none')" style="background: #222634; border: none; padding: 8px; font-size:12px; color:#adbac7; cursor: pointer; border-radius: 6px;">
-                    Убрать обводку аватарки (Бесплатно)
-                </button>
+                <!-- Элемент RGB обводки -->
+                <div onclick="window._buyBorder('rgb')" style="background: #12141c; border: 1px solid #222634; padding: 12px; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;" onmouseover="this.style.borderColor='#55ff55'" onmouseout="this.style.borderColor='#222634'">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="border: 2px dashed #ff5555; width: 10px; height: 10px; border-radius: 50%;"></div>
+                        <span style="color: #fff; font-size: 13px; font-weight: 600;">Переливающийся RGB контур</span>
+                    </div>
+                    <span style="color: #ffb11b; font-weight: 700; font-size: 13px;">200 🪙</span>
+                </div>
             </div>
             
-            <div class="custom-prompt-buttons" style="margin-top: 10px;">
-                <button class="custom-prompt-btn secondary" onclick="document.body.removeChild(this.closest('.custom-prompt-overlay'))" style="cursor: pointer;">Закрыть</button>
+            <div style="display: flex; gap: 10px; margin-top: 20px; width: 100%;">
+                <button onclick="window._buyBorder('none')" style="flex: 1; background: #1c1f2b; border: 1px solid #2d3247; color: #768390; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">Сбросить обводку</button>
+                <button onclick="document.body.removeChild(this.closest('.custom-prompt-overlay'))" style="flex: 1; background: #238636; border: none; color: #fff; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">Закрыть</button>
             </div>
         </div>
     `;
@@ -839,21 +868,13 @@ function promptBuyBackground() {
         if (style === "none") {
             localStorage.setItem("oqexx_border_" + currentUser, "none");
             applyCustomization();
-            uiAlert("Успешно", "Обводка аватарки убрана!");
+            uiAlert("У熟пешно", "Обводка аватарки убрана!");
             return;
         }
-        let balance = getCoins();
-        if (balance < 200) {
-            uiAlert("Ошибка", "Недостаточно коинов для покупки обводки!");
-            return;
-        }
-        localStorage.setItem("oqexx_coins_" + currentUser, balance - 200);
-        localStorage.setItem("oqexx_border_" + currentUser, "rgb");
-        updateCoinsUI();
-        applyCustomization();
-        uiAlert("Успешно", "RGB обводка аватарки успешно куплена!");
+        buyCustomization(200, "border", "rgb");
     };
 }
+
 function promptBuyDescription() {
     customPrompt("Покупка статуса профиля", "Введите новое описание вашего профиля. Цена: 50 коинов.", function(desc) {
         buyCustomization(50, "desc", desc);
