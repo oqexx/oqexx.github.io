@@ -261,7 +261,8 @@
     animation: rgbGlow 3s linear infinite !important;
     border: 3px solid #ff5555 !important;
 }
-   
+ @keyframes rotation { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  
     </style>
 </head>
 <body>
@@ -821,72 +822,26 @@ function openAvatarViewModel() {
     document.body.appendChild(viewOverlay);
 }
 
-// Новое меню кастомизации с палитрой цветов и живыми эффектами
+// Перевод магазина в красивый анимированный режим тех. работ
 function promptBuyBackground() {
     const overlay = document.createElement("div");
     overlay.className = "custom-prompt-overlay";
     
     overlay.innerHTML = `
-        <div class="custom-prompt-box" style="max-width: 420px; background: #0b0c10; border: 1px solid #1f2330; padding: 22px; border-radius: 16px; box-sizing: border-box; font-family: sans-serif;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; width: 100%;">
-                <h3 class="custom-prompt-title" style="font-size: 20px; color: #fff; font-weight: 800; letter-spacing: 0.5px; margin: 0;">👑 PREMIUM SHOP</h3>
-                <span style="color: #ffb11b; font-weight: 700; font-size: 13px; background: rgba(255,177,27,0.1); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255,177,27,0.2);">Баланс: ${getCoins()} 🪙</span>
-            </div>
-            <p class="custom-prompt-text" style="color: #626f82; font-size: 13px; margin: 0 0 20px 0; width: 100%; line-height: 1.4;">Прокачай внешний вид своей панели управления уникальными стилями.</p>
-            
-            <h4 style="color: #8b9bb4; font-size: 11px; margin: 0 0 10px 0; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; align-self: flex-start;">Палитра фонов (100 🪙)</h4>
-            <div style="display: flex; gap: 12px; margin-bottom: 24px; justify-content: space-between; background: #11131a; padding: 12px; border-radius: 12px; border: 1px solid #1b1e29; width: 100%; box-sizing: border-box;">
-                <div onclick="window._selBg('#15171e')" style="background:#15171e; width:38px; height:38px; border-radius:50%; cursor:pointer; border:2px solid #32384e; transition: transform 0.2s;" title="Стандартный" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
-                <div onclick="window._selBg('#1c2234')" style="background:#1c2234; width:38px; height:38px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition: transform 0.2s;" title="Синий" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
-                <div onclick="window._selBg('#2c1e3d')" style="background:#2c1e3d; width:38px; height:38px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition: transform 0.2s;" title="Фиолетовый" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
-                <div onclick="window._selBg('#16352b')" style="background:#16352b; width:38px; height:38px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition: transform 0.2s;" title="Зеленый" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
-                <div onclick="window._selBg('#382323')" style="background:#382323; width:38px; height:38px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition: transform 0.2s;" title="Красный" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
-            </div>
-            
-            <h4 style="color: #8b9bb4; font-size: 11px; margin: 0 0 10px 0; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; align-self: flex-start;">Анимированные эффекты</h4>
-            <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-                <div onclick="window._selBg('live_cyber')" style="background: #11131a; border: 1px solid #1f2330; padding: 14px; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; width: 100%; box-sizing: border-box;" onmouseover="this.style.borderColor='#ff5555'; this.style.background='#141722';" onmouseout="this.style.borderColor='#1f2330'; this.style.background='#11131a';">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="background: linear-gradient(-45deg, #ff5555, #55ff55, #5555ff); width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 8px #ff5555;"></div>
-                        <span style="color: #fff; font-size: 14px; font-weight: 600;">Живой космический фон</span>
-                    </div>
-                    <span style="color: #ffb11b; font-weight: 700; font-size: 14px;">150 🪙</span>
-                </div>
-                
-                <div onclick="window._buyBorder('rgb')" style="background: #11131a; border: 1px solid #1f2330; padding: 14px; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; width: 100%; box-sizing: border-box;" onmouseover="this.style.borderColor='#55ff55'; this.style.background='#141722';" onmouseout="this.style.borderColor='#1f2330'; this.style.background='#11131a';">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="border: 2px dashed #ff5555; width: 12px; height: 12px; border-radius: 50%;"></div>
-                        <span style="color: #fff; font-size: 14px; font-weight: 600;">Переливающийся RGB контур</span>
-                    </div>
-                    <span style="color: #ffb11b; font-weight: 700; font-size: 14px;">200 🪙</span>
-                </div>
-            </div>
-            
-            <div style="display: flex; gap: 12px; margin-top: 24px; width: 100%;">
-                <button onclick="window._buyBorder('none')" style="flex: 1; background: #1c1f2b; border: 1px solid #2d3247; color: #768390; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#25293c'">Сбросить обводку</button>
-                <button onclick="document.body.removeChild(this.closest('.custom-prompt-overlay'))" style="flex: 1; background: #238636; border: none; color: #fff; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#2ea043'">Закрыть</button>
-            </div>
+        <div class="custom-prompt-box" style="max-width: 400px; background: #0b0c10; border: 1px solid #1f2330; padding: 24px; border-radius: 16px; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+            <div style="font-size: 40px; animation: rotation 4s linear infinite; display: inline-block;">🛠️</div>
+            <h3 class="custom-prompt-title" style="font-size: 20px; color: #fff; font-weight: 800; margin: 0; letter-spacing: 0.5px;">ТЕХНИЧЕСКИЕ РАБОТЫ</h3>
+            <p class="custom-prompt-text" style="color: #626f82; font-size: 14px; margin: 0; line-height: 1.5;">
+                Магазин кастомизации профиля и живых фонов временно находится на обслуживании. Мы улучшаем анимации и палитру цветов, чтобы GUI работал идеально!
+            </p>
+            <div style="width: 100%; height: 1px; background: #1f2330; margin: 5px 0;"></div>
+            <button onclick="document.body.removeChild(this.closest('.custom-prompt-overlay'))" style="width: 100%; background: #238636; border: none; color: #fff; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#2ea043'" onmouseout="this.style.background='#238636'">
+                Понятно
+            </button>
         </div>
     `;
     
     document.body.appendChild(overlay);
-    
-    window._selBg = function(color) {
-        document.body.removeChild(overlay);
-        let cost = color === "live_cyber" ? 150 : 100;
-        buyCustomization(cost, "bg", color);
-    };
-    
-    window._buyBorder = function(style) {
-        document.body.removeChild(overlay);
-        if (style === "none") {
-            localStorage.setItem("oqexx_border_" + currentUser, "none");
-            applyCustomization();
-            uiAlert("Успешно", "Обводка аватарки убрана!");
-            return;
-        }
-        buyCustomization(200, "border", "rgb");
-    };
 }
 
 function promptBuyDescription() {
