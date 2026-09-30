@@ -196,14 +196,20 @@
 
         <div class="dashboard-grid">
             <div class="sidebar">
-                <div class="profile-container">
-                    <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="uploadAvatar(this.files[0])">
-                    <div class="avatar-wrapper" onclick="openAvatarViewModal()">
-                        <img id="avatarDisplay" class="avatar-img" src="data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 24 24' fill='%237e8799'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>">
-                        <div class="avatar-hint">Просмотр</div>
-                    </div>
-                    <div id="userLabel" class="nickname-display" onclick="uiPrompt('Изменение никнейма', 'Введите новый никнейм:', handleNicknameChange)">User</div>
-                </div>
+                <div class="profile-container" style="padding: 15px; border-radius: 10px; display: flex; flex-direction: column; align-items: center;">
+    <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="uploadAvatar(this.files[0])">
+    <div class="avatar-wrapper" onclick="openAvatarViewModel()">
+        <img id="avatarDisplay" class="avatar-img" src="data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 24 24' fill='%237e8799'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>">
+        <div class="avatar-hint">Просмотр</div>
+    </div>
+    <div id="userLabel" class="nickname-display" onclick="uiPrompt('Изменение никнейма', 'Введите новый никнейм:', handleNicknameChange)" style="cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 10px;"></div>
+    
+    <!-- Кнопки магазина кастомизации -->
+    <div class="shop-buttons" style="margin-top: 10px; display: flex; gap: 5px;">
+        <button class="btn-primary" onclick="promptBuyBackground()" style="font-size: 11px; padding: 4px 8px;">Цвет фона (100 🪙)</button>
+        <button class="btn-primary" onclick="promptBuyDescription()" style="font-size: 11px; padding: 4px 8px;">Описание (50 🪙)</button>
+    </div>
+</div>
 
                 <div id="serverStatusText" class="status-panel">Сервера синхронизированы</div>
                 
@@ -445,6 +451,70 @@ function handleFreezeClick() {
         });
     }
 }
+    // База купонов на коины
+const coinCoupons = {
+    "OQEXX-START-2026": 50,
+    "PRO-BOOST-100": 100,
+    "VIP-COIN-FREE": 250,
+    "SECRET-GIFT-500": 500,
+    "ADMIN-BONUS-999": 999
+};
+
+// Получить баланс коинов текущего пользователя
+function getCoins() {
+    return parseInt(localStorage.getItem("oqexx_coins_" + currentUser)) || 0;
+}
+
+// Обновить отображение коинов на экране
+function updateCoinsUI() {
+    const coinEl = document.getElementById("coinBalance");
+    if (coinEl) coinEl.innerText = getCoins() + " 🪙";
+}
+
+// Функция активации купона (привяжем к вашей кнопке)
+function handleCoinCoupon(code) {
+    let cleanedCode = code.trim().toUpperCase();
+    
+    if (coinCoupons[cleanedCode]) {
+        let reward = coinCoupons[cleanedCode];
+        let currentBalance = getCoins();
+        
+        localStorage.setItem("oqexx_coins_" + currentUser, currentBalance + reward);
+        updateCoinsUI();
+        uiAlert("Успешно", `Вы активировали купон и получили ${reward} коинов!`);
+        return true;
+    }
+    return false;
+}
+
+// Функция покупки кастомизации
+function buyCustomization(cost, type, value) {
+    let balance = getCoins();
+    if (balance < cost) {
+        uiAlert("Ошибка", "Недостаточно коинов! Активируйте купоны.");
+        return false;
+    }
+    
+    localStorage.setItem("oqexx_coins_" + currentUser, balance - cost);
+    localStorage.setItem("oqexx_" + type + "_" + currentUser, value);
+    updateCoinsUI();
+    applyCustomization();
+    uiAlert("Успешно", "Настройка профиля успешно куплена и применена!");
+    return true;
+}
+
+// Применение настроек фона и описания при загрузке
+function applyCustomization() {
+    let bg = localStorage.getItem("oqexx_bg_" + currentUser) || "#111"; // дефолтный фон профиля
+    let desc = localStorage.getItem("oqexx_desc_" + currentUser) || "Нет описания";
+    
+    let profileCard = document.querySelector(".profile-container");
+    if (profileCard) profileCard.style.background = bg;
+    
+    let descEl = document.getElementById("userDescription");
+    if (descEl) descEl.innerText = desc;
+}
+
 
 function processAuth() {
     let u = document.getElementById("username").value.trim().toLowerCase(), p = document.getElementById("password").value.trim(), users = JSON.parse(localStorage.getItem("oqexx_users") || "{}");
@@ -461,15 +531,49 @@ function processAuth() {
 }
 
 function openDashboard() {
-    document.getElementById("authBlock").style.display = "none"; document.getElementById("adminPanel").style.display = "flex";
-    let savedNick = localStorage.getItem("oqexx_nick_" + currentUser); document.getElementById("userLabel").innerText = savedNick ? savedNick : currentUser;
+    document.getElementById("authBlock").style.display = "none";
+    document.getElementById("adminPanel").style.display = "flex";
+    
+    let savedNick = localStorage.getItem("oqexx_nick_" + currentUser);
+    document.getElementById("userLabel").innerText = savedNick ? savedNick : currentUser;
+    
     let savedAvatar = localStorage.getItem("oqexx_avatar_" + currentUser);
-    if (savedAvatar) { document.getElementById("avatarDisplay").src = savedAvatar; }
-    else { document.getElementById("avatarDisplay").src = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 24 24' fill='%237e8799'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>"; }
-    let ap = document.getElementById("adminControls"); if (currentUser === "oqexx") { ap.style.display = "block"; updateAdminButtonUI(); } else { ap.style.display = "none"; }
+    if (savedAvatar) {
+        document.getElementById("avatarDisplay").src = savedAvatar;
+    } else {
+        document.getElementById("avatarDisplay").src = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 24 24' fill='%237e8799'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
+    }
+    
+    let ap = document.getElementById("adminControls");
+    if (currentUser === "oqexx") { ap.style.display = "block"; updateAdminButtonUI(); } else { ap.style.display = "none"; }
+    
     document.getElementById("statRole").innerText = currentUser === "oqexx" ? "Owner" : "Beta";
-    applyGlobalFreezeUI(); renderHistory();
+    applyGlobalFreezeUI();
+    if (typeof renderHistory === "function") renderHistory();
+
+    // Авто-создание блоков под никнеймом для отображения коинов и описания профиля
+    let container = document.querySelector(".profile-container");
+    if (container) {
+        if (!document.getElementById("coinBalance")) {
+            let coinDiv = document.createElement("div");
+            coinDiv.id = "coinBalance";
+            coinDiv.style = "font-size: 16px; color: #f1c40f; margin: 5px 0; font-weight: bold; cursor: pointer; text-align: center;";
+            coinDiv.title = "Нажмите, чтобы активировать купон";
+            coinDiv.onclick = promptActivateCoinCoupon;
+            container.appendChild(coinDiv);
+        }
+        if (!document.getElementById("userDescription")) {
+            let descDiv = document.createElement("div");
+            descDiv.id = "userDescription";
+            descDiv.style = "font-size: 13px; color: #bbb; margin: 5px 0; font-style: italic; text-align: center; word-break: break-all; padding: 0 10px;";
+            container.appendChild(descDiv);
+        }
+    }
+
+    updateCoinsUI();
+    applyCustomization();
 }
+
 
 function downloadFreezeFile(textValue) {
     let blob = new Blob([textValue], { type: "text/plain" }); let anchor = document.createElement("a");
