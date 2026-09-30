@@ -196,33 +196,34 @@
 
         <div class="dashboard-grid">
             <div class="sidebar">
-                <div class="profile-container" style="padding: 20px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; background: #1a1a1a; gap: 10px;">
-    <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="uploadAvatar(this.files)">
+                <div class="profile-container" style="padding: 20px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; background: #15171e; border: 1px solid #222634; box-shadow: 0 4px 15px rgba(0,0,0,0.3); gap: 12px; width: 100%; box-sizing: border-box; margin-bottom: 15px;">
     
     <!-- Аватарка (кликая на неё, открывается оверлей) -->
-    <div class="avatar-wrapper" onclick="openAvatarViewModel()" style="cursor: pointer; position: relative;">
-        <img id="avatarDisplay" class="avatar-img" src="data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 24 24' fill='%237e8799'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
-        <div class="avatar-hint" style="position: absolute; bottom: 0; background: rgba(0,0,0,0.6); width: 100%; text-align: center; color: #fff; font-size: 10px; padding: 2px 0; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;">Смотреть</div>
+    <div class="avatar-wrapper" onclick="openAvatarViewModel()" style="cursor: pointer; position: relative; width: 90px; height: 90px; border-radius: 50%; overflow: hidden; border: 2px solid #2e3446;">
+        <img id="avatarDisplay" class="avatar-img" src="data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 24 24' fill='%237e8799'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>" style="width: 100%; height: 100%; object-fit: cover;">
+        <div class="avatar-hint" style="position: absolute; bottom: 0; left: 0; background: rgba(0,0,0,0.7); width: 100%; text-align: center; color: #fff; font-size: 10px; padding: 3px 0; font-weight: 500;">Смотреть</div>
     </div>
     
-    <!-- Кнопка "Изменить аватар" прямо под ней -->
-    <button class="btn-primary" onclick="document.getElementById('avatarInput').click()" style="font-size: 11px; padding: 3px 8px;">Изменить аватар</button>
+    <!-- Кнопка изменения аватарки -->
+    <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="uploadAvatar(this.files)">
+    <button type="button" class="btn-primary" onclick="document.getElementById('avatarInput').click(); event.stopPropagation();" style="font-size: 11px; padding: 5px 12px; background: #222634; border: 1px solid #32384e; color: #adbac7; border-radius: 6px; cursor: pointer; font-weight: 600;">Изменить аватар</button>
 
-    <!-- Никнейм -->
-    <div id="userLabel" class="nickname-display" onclick="uiPrompt('Изменение никнейма', 'Введите новый никнейм:', handleNicknameChange)" style="cursor: pointer; font-weight: bold; font-size: 18px; color: #fff; margin-top: 5px;"></div>
+    <!-- Текстовый блок никнейма и статуса -->
+    <div style="display: flex; flex-direction: column; align-items: center; width: 100%; gap: 4px; margin-top: 5px;">
+        <div id="userLabel" class="nickname-display" onclick="uiPrompt('Изменение никнейма', 'Введите новый никнейм:', handleNicknameChange)" style="cursor: pointer; font-weight: bold; font-size: 18px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></div>
+        <div id="userDescription" style="font-size: 12px; color: #768390; font-style: italic; text-align: center; word-break: break-all; max-width: 180px;">Нет описания</div>
+    </div>
     
-    <!-- Баланс коинов (клик сюда открывает ввод КУПОНА) -->
-    <div id="coinBalance" onclick="promptActivateCoinCoupon()" style="font-size: 15px; color: #f1c40f; font-weight: bold; cursor: pointer; padding: 4px 10px; background: rgba(241,196,15,0.1); border-radius: 5px; border: 1px dashed #f1c40f;" title="Нажмите, чтобы ввести купон">0 🪙</div>
+    <!-- Плашка коинов под цвет сайта (клик сюда открывает КУПОН) -->
+    <div id="coinBalance" onclick="promptActivateCoinCoupon(); event.stopPropagation();" style="font-size: 14px; color: #ffb11b; font-weight: 700; cursor: pointer; padding: 6px 16px; background: rgba(255,177,27,0.08); border-radius: 20px; border: 1px solid rgba(255,177,27,0.3); display: flex; align-items: center; gap: 6px; margin: 4px 0;" title="Нажмите для активации купона">0 🪙</div>
     
-    <!-- Описание профиля -->
-    <div id="userDescription" style="font-size: 13px; color: #bbb; font-style: italic; text-align: center; word-break: break-all; max-width: 150px;">Нет описания</div>
-    
-    <!-- Кнопки магазина кастомизации -->
-    <div class="shop-buttons" style="margin-top: 5px; display: flex; gap: 8px;">
-        <button class="btn-primary" onclick="promptBuyBackground()" style="font-size: 11px; padding: 5px 10px;">Фон (100 🪙)</button>
-        <button class="btn-primary" onclick="promptBuyDescription()" style="font-size: 11px; padding: 5px 10px;">Статус (50 🪙)</button>
+    <!-- Кнопки магазина -->
+    <div class="shop-buttons" style="display: flex; gap: 8px; width: 100%; justify-content: center; margin-top: 4px;">
+        <button type="button" class="btn-primary" onclick="promptBuyBackground(); event.stopPropagation();" style="font-size: 11px; padding: 7px 12px; flex: 1; max-width: 100px; background: #222634; border: 1px solid #32384e; color: #ffb11b; font-weight: 600; border-radius: 6px; cursor: pointer;">Фон (100 🪙)</button>
+        <button type="button" class="btn-primary" onclick="promptBuyDescription(); event.stopPropagation();" style="font-size: 11px; padding: 7px 12px; flex: 1; max-width: 100px; background: #222634; border: 1px solid #32384e; color: #58a6ff; font-weight: 600; border-radius: 6px; cursor: pointer;">Статус (50 🪙)</button>
     </div>
 </div>
+
 
 
                 <div id="serverStatusText" class="status-panel">Сервера синхронизированы</div>
@@ -603,6 +604,35 @@ function applyGlobalFreezeUI() {
         ab.disabled = false; ab.innerText = "АКТИВИРОВАТЬ И СГЕНЕРИРОВАТЬ КЛЮЧ"; ab.style.background = "var(--accent-color)"; ab.style.color = "#fff";
     }
 }
+
+    }
+}
+
+// Новые функции магазина и купонов
+function promptBuyBackground() {
+    let code = prompt("Введите HEX-код цвета для фона (например, #2c3e50 или #e74c3c) или название цвета. Цена: 100 коинов.");
+    if (code) {
+        buyCustomization(100, "bg", code.trim());
+    }
+}
+
+function promptBuyDescription() {
+    let desc = prompt("Введите новое описание вашего профиля. Цена: 50 коинов.");
+    if (desc) {
+        buyCustomization(50, "desc", desc.trim());
+    }
+}
+
+function promptActivateCoinCoupon() {
+    let code = prompt("Введите ваш купон на коины (например, OQEXX-START-2026):");
+    if (code) {
+        let success = handleCoinCoupon(code);
+        if (!success) {
+            uiAlert("Ошибка", "Такого купона не существует или он неверный!");
+        }
+    }
+}
+
 
 function logout() { localStorage.removeItem("oqexx_session"); currentUser = ""; document.getElementById("adminPanel").style.display = "none"; document.getElementById("authBlock").style.display = "block"; }
 
