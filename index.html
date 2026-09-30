@@ -215,6 +215,30 @@
 @keyframes modalFadeIn { to { opacity: 1; } }
 @keyframes modalScaleIn { to { transform: scale(1); } }
     
+/* Анимация живого неонового фона профиля */
+@keyframes cyberGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.live-bg-cyber {
+    background: linear-gradient(-45deg, #15171e, #1e2234, #2c1e3d, #1a2636) !important;
+    background-size: 400% 400% !important;
+    animation: cyberGradient 12s ease infinite !important;
+}
+
+/* Анимация переливающейся RGB-обводки для аватарки */
+@keyframes rgbGlow {
+    0% { border-color: #ff5555; box-shadow: 0 0 10px #ff5555; }
+    33% { border-color: #55ff55; box-shadow: 0 0 10px #55ff55; }
+    66% { border-color: #5555ff; box-shadow: 0 0 10px #5555ff; }
+    100% { border-color: #ff5555; box-shadow: 0 0 10px #ff5555; }
+}
+.live-avatar-rgb {
+    animation: rgbGlow 4s linear infinite !important;
+    border-width: 3px !important;
+}
+    
     </style>
 </head>
 <body>
@@ -398,6 +422,35 @@ function openAvatarViewModal() {
     document.getElementById("modalAvatarImg").src = currentSrc;
     openModalOverlay("avatarViewModal");
 }
+function applyCustomization() {
+    let bg = localStorage.getItem("oqexx_bg_" + currentUser) || "#15171e";
+    let desc = localStorage.getItem("oqexx_desc_" + currentUser) || "Нет описания";
+    let borderStyle = localStorage.getItem("oqexx_border_" + currentUser) || "none";
+    
+    let profileCard = document.querySelector(".profile-container");
+    if (profileCard) {
+        profileCard.classList.remove("live-bg-cyber");
+        if (bg === "live_cyber") {
+            profileCard.classList.add("live-bg-cyber");
+        } else {
+            profileCard.style.background = bg;
+        }
+    }
+    
+    let descEl = document.getElementById("userDescription");
+    if (descEl) descEl.innerText = desc;
+
+    let avatarWrapper = document.querySelector(".avatar-wrapper");
+    if (avatarWrapper) {
+        avatarWrapper.classList.remove("live-avatar-rgb");
+        if (borderStyle === "rgb") {
+            avatarWrapper.classList.add("live-avatar-rgb");
+        } else {
+            avatarWrapper.style.borderColor = "#2e3446";
+            avatarWrapper.style.boxShadow = "none";
+        }
+    }
+}
 
 function closeAvatarViewModal() { closeModalOverlay("avatarViewModal"); }
 
@@ -519,8 +572,12 @@ const coinCoupons = {
     "PRO-BOOST-100": 100,
     "VIP-COIN-FREE": 250,
     "SECRET-GIFT-500": 500,
-    "ADMIN-BONUS-999": 999
+    "ADMIN-BONUS-999": 999,
+    "OQEXX-MEGA-1500": 1500,
+    "BOOST-5000-COIN": 5000,
+    "OQEXX-GOD-777": 7777
 };
+
 
 // Получить баланс коинов текущего пользователя
 function getCoins() {
@@ -705,17 +762,76 @@ function openAvatarViewModel() {
     document.body.appendChild(viewOverlay);
 }
 
+// Новое меню кастомизации с палитрой цветов и живыми эффектами
 function promptBuyBackground() {
-    customPrompt("Покупка цвета фона", "Введите HEX-код цвета (например, #2c3e50 или #e74c3c) или название цвета. Цена: 100 коинов.", function(code) {
-        buyCustomization(100, "bg", code);
-    });
+    const overlay = document.createElement("div");
+    overlay.className = "custom-prompt-overlay";
+    
+    overlay.innerHTML = `
+        <div class="custom-prompt-box" style="max-width: 450px;">
+            <h3 class="custom-prompt-title">🎨 Магазин кастомизации</h3>
+            <p class="custom-prompt-text">Выберите готовый стиль фона (100 🪙) или уникальные живые эффекты:</p>
+            
+            <!-- Сетка готовых цветов -->
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 10px 0;">
+                <div onclick="window._selBg('#15171e')" style="background:#15171e; height:35px; border-radius:6px; cursor:pointer; border:1px solid #333;" title="Дефолтный"></div>
+                <div onclick="window._selBg('#1c2234')" style="background:#1c2234; height:35px; border-radius:6px; cursor:pointer;" title="Темно-синий"></div>
+                <div onclick="window._selBg('#2c1e3d')" style="background:#2c1e3d; height:35px; border-radius:6px; cursor:pointer;" title="Фиолетовый"></div>
+                <div onclick="window._selBg('#16352b')" style="background:#16352b; height:35px; border-radius:6px; cursor:pointer;" title="Изумрудный"></div>
+                <div onclick="window._selBg('#382323')" style="background:#382323; height:35px; border-radius:6px; cursor:pointer;" title="Бордовый"></div>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Кнопка живого фона -->
+                <button class="custom-prompt-btn primary" onclick="window._selBg('live_cyber')" style="background: linear-gradient(-45deg, #ff5555, #55ff55, #5555ff); border: none; padding: 10px; font-weight: bold; cursor: pointer; border-radius: 6px;">
+                    🌌 Включить живой фон (150 🪙)
+                </button>
+                
+                <!-- Кнопка RGB обводки -->
+                <button class="custom-prompt-btn primary" onclick="window._buyBorder('rgb')" style="background: #0d1117; border: 1px dashed #ff5555; color: #fff; padding: 10px; font-weight: bold; cursor: pointer; border-radius: 6px;">
+                    🌈 Купить RGB обводку на аву (200 🪙)
+                </button>
+                
+                <button class="custom-prompt-btn primary" onclick="window._buyBorder('none')" style="background: #222634; border: none; padding: 8px; font-size:12px; color:#adbac7; cursor: pointer; border-radius: 6px;">
+                    Убрать обводку аватарки (Бесплатно)
+                </button>
+            </div>
+            
+            <div class="custom-prompt-buttons" style="margin-top: 10px;">
+                <button class="custom-prompt-btn secondary" onclick="document.body.removeChild(this.closest('.custom-prompt-overlay'))" style="cursor: pointer;">Закрыть</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    window._selBg = function(color) {
+        document.body.removeChild(overlay);
+        let cost = color === "live_cyber" ? 150 : 100;
+        buyCustomization(cost, "bg", color);
+    };
+    
+    window._buyBorder = function(style) {
+        document.body.removeChild(overlay);
+        if (style === "none") {
+            localStorage.setItem("oqexx_border_" + currentUser, "none");
+            applyCustomization();
+            uiAlert("Успешно", "Обводка аватарки убрана!");
+            return;
+        }
+        let balance = getCoins();
+        if (balance < 200) {
+            uiAlert("Ошибка", "Недостаточно коинов для покупки обводки!");
+            return;
+        }
+        localStorage.setItem("oqexx_coins_" + currentUser, balance - 200);
+        localStorage.setItem("oqexx_border_" + currentUser, "rgb");
+        updateCoinsUI();
+        applyCustomization();
+        uiAlert("Успешно", "RGB обводка аватарки успешно куплена!");
+    };
 }
 
-function promptBuyDescription() {
-    customPrompt("Покупка статуса профиля", "Введите новое описание вашего профиля. Цена: 50 коинов.", function(desc) {
-        buyCustomization(50, "desc", desc);
-    });
-}
 
 function promptActivateCoinCoupon() {
     customPrompt("Активация промокода", "Введите ваш купон на коины для пополнения баланса профиля:", function(code) {
