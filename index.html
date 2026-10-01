@@ -324,13 +324,14 @@
             100% { background-position: 0% 50%; box-shadow: 0 0 15px rgba(88, 101, 242, 0.3); }
         }
 
-        .live-avatar-rgb {
-            padding: 2px !important; /* Зазор для видимости градиента */
+              .live-avatar-rgb {
+            padding: 4px !important; /* Делаем отступ, чтобы радуга вылезла наружу */
             background: linear-gradient(45deg, #ff3344, #5865F2, #ffb11b, #00ff66, #ff3344) !important;
             background-size: 400% 400% !important;
             animation: avatarRainbowGlow 4s ease infinite !important;
             border-radius: 50% !important;
-            border: none !important; /* Убираем стандартную рамку для работы градиента */
+            box-sizing: border-box !important;
+            border: none !important; /* Убираем старую рамку */
         }
 
 
