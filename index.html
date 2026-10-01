@@ -658,10 +658,7 @@ function applyCustomization() {
     
     let profileCard = document.querySelector(".profile-container");
     if (profileCard) {
-        // Чистим абсолютно все старые классы перед применением нового, чтобы они не накладывались
         profileCard.classList.remove("bg-gradient-blue", "bg-gradient-purple", "bg-gradient-red", "live-bg-cyber");
-        
-        // Исправляем баг: проверяем ключ в localStorage и выдаем нужный класс
         if (bg === "blue" || bg === "live_cyber") {
             profileCard.classList.add("bg-gradient-blue");
         } else if (bg === "purple") {
@@ -676,17 +673,20 @@ function applyCustomization() {
     let descEl = document.getElementById("userDescription");
     if (descEl) descEl.innerText = desc;
 
-    let avatarWrapper = document.querySelector(".avatar-wrapper");
-    if (avatarWrapper) {
-        avatarWrapper.classList.remove("live-avatar-rgb");
+    // ФИКС ОБВОДКИ: Находим аватарку напрямую по ID её картинки
+    let avatarImg = document.getElementById("avatarDisplay");
+    if (avatarImg) {
+        avatarImg.classList.remove("live-avatar-rgb");
         if (borderStyle === "rgb") {
-            avatarWrapper.classList.add("live-avatar-rgb");
+            avatarImg.classList.add("live-avatar-rgb");
         } else {
-            avatarWrapper.style.border = "2px solid #2e3446";
-            avatarWrapper.style.boxShadow = "none";
+            avatarImg.style.border = "2px solid #2e3446";
+            avatarImg.style.boxShadow = "none";
+            avatarImg.style.padding = "0";
         }
     }
 }
+
 
 
 
