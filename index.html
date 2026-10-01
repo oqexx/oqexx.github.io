@@ -265,6 +265,30 @@
 }
  @keyframes rotation { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
   
+           /* Стили для системы репортов */
+        #reportMessage:focus {
+            border-color: var(--accent-color);
+            background: #171b29;
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+        .report-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            padding: 18px;
+            border-radius: 12px;
+            animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+            transition: all 0.25s ease;
+        }
+        .report-card:hover {
+            border-color: rgba(255, 177, 27, 0.4);
+            transform: translateX(4px);
+        }
+        /* Кастомный красивый скроллбар для админки */
+        #adminReportsContainer::-webkit-scrollbar { width: 6px; }
+        #adminReportsContainer::-webkit-scrollbar-track { background: transparent; }
+        #adminReportsContainer::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        #adminReportsContainer::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
+ 
     </style>
 </head>
 <body>
@@ -393,6 +417,42 @@
 
                 <div id="resultBox" style="display: none; background: rgba(0, 255, 102, 0.08); border: 1px solid var(--color-success); padding: 18px; border-radius: 12px; margin-bottom: 30px; text-align: center; color: #fff; font-weight: 600;">
                     Ключ успешно создан и скопирован: <span id="keyDisplay" style="font-family: monospace; margin-left: 5px; color: var(--color-success);"></span>
+                </div>
+                    
+                                <!-- БЛОК РЕПОРТОВ И ТИКЕТОВ -->
+                <div class="reports-section" style="margin-bottom: 35px; animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;">
+                    
+                    <!-- Форма для обычных пользователей -->
+                    <div id="userReportBlock" style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 30px; border-radius: 20px; transition: all 0.3s ease; position: relative; overflow: hidden; font-family: sans-serif;">
+                        <div style="position: absolute; top: -50px; right: -50px; width: 120px; height: 120px; background: rgba(81, 88, 226, 0.05); border-radius: 50%; blur: 40px; pointer-events: none;"></div>
+                        <h3 style="margin: 0 0 8px 0; color: #fff; font-size: 18px; display: flex; align-items: center; gap: 8px;">
+                            <span>🛠️</span> Центр поддержки и репортов
+                        </h3>
+                        <p style="color: var(--text-muted); font-size: 13.5px; margin: 0 0 20px 0; line-height: 1.5;">
+                            Нашли баг в софте, обход защиты или возникли проблемы с подпиской? Опишите проблему, и разработчик рассмотрит её в ближайшее время.
+                        </p>
+                        
+                        <input type="text" id="reportTitle" placeholder="Тема обращения (например: Краш при инжекте)" style="margin-bottom: 15px; padding: 14px 18px; font-size: 14.5px; border-radius: 10px;">
+                        <textarea id="reportMessage" placeholder="Подробно опишите вашу проблему или баг..." style="width: 100%; height: 120px; padding: 16px; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; color: #fff; font-size: 14.5px; font-family: inherit; box-sizing: border-box; resize: none; outline: none; transition: all 0.3s ease; margin-bottom: 20px;"></textarea>
+                        
+                        <button onclick="sendUserReport()" class="btn-primary" style="padding: 14px 22px; font-size: 14.5px; border-radius: 10px; width: auto; font-weight: 700; background: linear-gradient(135deg, var(--accent-color) 0%, #3f46cd 100%);">
+                            ОТПРАВИТЬ РЕПОРТ
+                        </button>
+                    </div>
+
+                    <!-- Панель для тебя (Администратора oqexx) -->
+                    <div id="adminReportBlock" style="display: none; background: #0f111a; border: 1px solid rgba(81, 88, 226, 0.25); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(81, 88, 226, 0.05); font-family: sans-serif;">
+                        <h3 style="margin: 0 0 5px 0; color: #fff; font-size: 18px; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--color-warning);">👑 Входящие репорты от пользователей</span>
+                            <button onclick="clearAllReports()" style="background: rgba(255,51,68,0.1); border: 1px solid rgba(255,51,68,0.2); color: var(--color-danger); font-size: 11px; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s;">Очистить все</button>
+                        </h3>
+                        <p style="color: var(--text-muted); font-size: 13px; margin: 0 0 20px 0;">Здесь отображаются баги и тикеты, отправленные пользователями ЛК софта.</p>
+                        
+                        <div id="adminReportsContainer" style="display: flex; flex-direction: column; gap: 15px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
+                            <!-- Сюда скрипт будет красиво рендерить карточки -->
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- НОВЫЙ ИНТЕРАКТИВНЫЙ БЛОК БАЗЫ ЗНАНИЙ (ИНСТРУКЦИЯ) -->
@@ -763,7 +823,10 @@ function openDashboard() {
 
     updateCoinsUI();
     applyCustomization();
+    updateReportsUI();
+
 }
+
 
 
 
@@ -918,6 +981,83 @@ function updateStats(c, d) { document.getElementById("statCount").innerText = c 
 function filterHistory() { let q = document.getElementById("historySearch").value.toLowerCase(), items = document.querySelectorAll(".history-item"); items.forEach(function(i) { i.style.display = i.innerText.toLowerCase().includes(q) ? "flex" : "none"; }); }
 function removeAllModals() { closeAvatarViewModal(); closeModalOverlay("customModal"); }
 window.onclick = function(e) { if (e.target.classList.contains("custom-modal-overlay")) { closeCustomModal(false); closeAvatarViewModal(); } }
+
+// =========================================================
+// СИСТЕМА РЕПОРТОВ И ТИКЕТОВ OQEXX SOFTWARE
+// =========================================================
+function sendUserReport() {
+    let title = document.getElementById("reportTitle").value.trim();
+    let msg = document.getElementById("reportMessage").value.trim();
+    
+    if (!title || !msg) {
+        uiAlert("Внимание", "Пожалуйста, заполните тему и текст репорта!");
+        return;
+    }
+    
+    let reports = localStorage.getItem("oqexx_tickets") ? JSON.parse(localStorage.getItem("oqexx_tickets")) : [];
+    let date = new Date();
+    let formattedDate = String(date.getDate()).padStart(2, '0') + "." + String(date.getMonth() + 1).padStart(2, '0') + " " + String(date.getHours()).padStart(2, '0') + ":" + String(date.getMinutes()).padStart(2, '0');
+    
+    reports.unshift({
+        user: currentUser,
+        title: title,
+        message: msg,
+        date: formattedDate
+    });
+    
+    localStorage.setItem("oqexx_tickets", JSON.stringify(reports));
+    
+    document.getElementById("reportTitle").value = "";
+    document.getElementById("reportMessage").value = "";
+    uiAlert("Успешно", "Ваш репорт отправлен разработчику. Спасибо за помощь!");
+}
+
+function updateReportsUI() {
+    let userBlock = document.getElementById("userReportBlock");
+    let adminBlock = document.getElementById("adminReportBlock");
+    let container = document.getElementById("adminReportsContainer");
+    
+    if (!userBlock || !adminBlock || !container) return;
+    
+    if (currentUser === "oqexx") {
+        userBlock.style.display = "none";
+        adminBlock.style.display = "block";
+        
+        let reports = localStorage.getItem("oqexx_tickets") ? JSON.parse(localStorage.getItem("oqexx_tickets")) : [];
+        if (reports.length === 0) {
+            container.innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:14px; padding:20px;">Нет активных репортов от пользователей. Всё чисто! ✨</div>`;
+            return;
+        }
+        
+        container.innerHTML = "";
+        reports.forEach(function(rep) {
+            container.innerHTML += `
+                <div class="report-card" style="margin-bottom: 12px; text-align: left;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-size:12px; background:rgba(81, 88, 226, 0.15); color:#767df5; padding:4px 8px; border-radius:6px; font-weight:700;">От: ${rep.user}</span>
+                        <span style="font-size:12px; color:var(--text-muted);">${rep.date}</span>
+                    </div>
+                    <h4 style="margin:0 0 6px 0; color:#fff; font-size:15px; font-weight:600;">📌 ${rep.title}</h4>
+                    <p style="margin:0; color:var(--text-muted); font-size:13.5px; line-height:1.6; white-space:pre-wrap; background:var(--bg-main); padding:12px; border-radius:8px; border:1px solid var(--border-color);">${rep.message}</p>
+                </div>
+            `;
+        });
+    } else {
+        userBlock.style.display = "block";
+        adminBlock.style.display = "none";
+    }
+}
+
+function clearAllReports() {
+    uiConfirm("Очистка", "Вы уверены, что хотите удалить все входящие репорты?", function(res) {
+        if (res) {
+            localStorage.setItem("oqexx_tickets", JSON.stringify([]));
+            updateReportsUI();
+            uiAlert("Готово", "Все тикеты успешно удалены.");
+        }
+    });
+}
+
 </script>
 </body>
 </html>
