@@ -912,7 +912,9 @@ function applyGlobalFreezeUI() {
 function customPrompt(title, text, callback) {
     const overlay = document.createElement("div");
     overlay.className = "custom-prompt-overlay";
-    
+    overlay.style.display = "flex"; 
+    overlay.style.opacity = "1";    
+    overlay.style.zIndex = "99999"; 
     overlay.innerHTML = `
         <div class="custom-prompt-box">
             <h3 class="custom-prompt-title">${title}</h3>
@@ -924,7 +926,6 @@ function customPrompt(title, text, callback) {
             </div>
         </div>
     `;
-    
     document.body.appendChild(overlay);
     const input = overlay.querySelector("#modalInput");
     input.focus();
@@ -934,11 +935,9 @@ function customPrompt(title, text, callback) {
         document.body.removeChild(overlay);
         if (val !== null && val.trim() !== "") callback(val.trim());
     };
-    
-    overlay.querySelector("#modalCancel").onclick = function() {
-        document.body.removeChild(overlay);
-    };
+    overlay.querySelector("#modalCancel").onclick = function() { document.body.removeChild(overlay); };
 }
+
 
 function openAvatarViewModel() {
     let savedAvatar = localStorage.getItem("oqexx_avatar_" + currentUser);
