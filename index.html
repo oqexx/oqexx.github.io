@@ -1019,18 +1019,26 @@ function updateReportsUI() {
     
     if (!userBlock || !adminBlock || !container) return;
     
+    let reports = localStorage.getItem("oqexx_tickets") ? JSON.parse(localStorage.getItem("oqexx_tickets")) : [];
+    
     if (currentUser === "oqexx") {
         userBlock.style.display = "none";
         adminBlock.style.display = "block";
         
-        let reports = localStorage.getItem("oqexx_tickets") ? JSON.parse(localStorage.getItem("oqexx_tickets")) : [];
         if (reports.length === 0) {
             container.innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:14px; padding:20px;">Нет активных репортов от пользователей. Всё чисто! ✨</div>`;
             return;
         }
         
         container.innerHTML = "";
-        reports.forEach(function(rep) {
+        reports.forEach(function(rep, index) {
+            let adminAnswerHtml = rep.answer ? 
+                `<div style="margin-top:10px; padding:10px; background:rgba(0, 255, 102, 0.04); border:1px solid rgba(0, 255, 102, 0.15); border-radius:8px; color:var(--color-success); font-size:13px;"><strong>👑 Ваш ответ:</strong> ${rep.answer}</div>` : 
+                `<div style="margin-top:12px; display:flex; gap:8px;">
+                    <input type="text" id="ansInput_${index}" placeholder="Напишите ответ пользователю..." style="margin:0; padding:10px 14px; font-size:13px; border-radius:8px; height:auto; background:var(--bg-main); border:1px solid var(--border-color); color:#fff; width:100%;">
+                    <button onclick="sendAdminAnswer(${index})" class="btn-primary" style="width:auto; padding:0 18px; font-size:13px; border-radius:8px; background:var(--accent-color);">Ответить</button>
+                 </div>`;
+
             container.innerHTML += `
                 <div class="report-card" style="margin-bottom: 12px; text-align: left;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -1039,12 +1047,56 @@ function updateReportsUI() {
                     </div>
                     <h4 style="margin:0 0 6px 0; color:#fff; font-size:15px; font-weight:600;">📌 ${rep.title}</h4>
                     <p style="margin:0; color:var(--text-muted); font-size:13.5px; line-height:1.6; white-space:pre-wrap; background:var(--bg-main); padding:12px; border-radius:8px; border:1px solid var(--border-color);">${rep.message}</p>
+                    ${adminAnswerHtml}
                 </div>
             `;
         });
     } else {
         userBlock.style.display = "block";
         adminBlock.style.display = "none";
+        
+        let userReports = reports.filter(r => r.user === currentUser && r.answer);
+        let historyBox = document.getElementById("userReportsHistory");
+        
+        if (!historyBox) {
+            historyBox = document.createElement("div");
+            historyBox.id = "userReportsHistory";
+            historyBox.style.marginTop = "25px";
+            userBlock.appendChild(historyBox);
+        }
+        
+        if (userReports.length > 0) {
+            historyBox.innerHTML = `<h4 style="color:#fff; font-size:14px; margin:0 0 12px 0;">💬 Ответы от разработчика:</h4>`;
+            userReports.forEach(function(rep) {
+                historyBox.innerHTML += `
+                    <div class="report-card" style="margin-bottom:12px; border-color:rgba(0, 255, 102, 0.2); text-align:left;">
+                        <div style="font-size:13px; font-weight:600; color:#fff; margin-bottom:4px;">Ваш репорт: "${rep.title}"</div>
+                        <div style="padding:10px; background:rgba(81, 88, 226, 0.05); border:1px solid var(--border-color); border-radius:8px; color:var(--text-muted); font-size:13px; line-height:1.4; margin-bottom:8px;">${rep.message}</div>
+                        <div style="padding:12px; background:rgba(0, 255, 102, 0.05); border:1px solid rgba(0, 255, 102, 0.2); border-radius:8px; color:#fff; font-size:13.5px; line-height:1.4;">
+                            <span style="color:var(--color-success); font-weight:700;">👑 Ответ oqexx:</span> ${rep.answer}
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            historyBox.innerHTML = "";
+        }
+    }
+}
+
+function sendAdminAnswer(index) {
+    let ansText = document.getElementById("ansInput_" + index).value.trim();
+    if (!ansText) {
+        uiAlert("Внимание", "Введите текст ответа!");
+        return;
+    }
+    
+    let reports = localStorage.getItem("oqexx_tickets") ? JSON.parse(localStorage.getItem("oqexx_tickets")) : [];
+    if (reports[index]) {
+        reports[index].answer = ansText;
+        localStorage.setItem("oqexx_tickets", JSON.stringify(reports));
+        updateReportsUI();
+        uiAlert("Успешно", "Ответ успешно сохранен и отправлен пользователю!");
     }
 }
 
