@@ -992,7 +992,7 @@ function openAvatarViewModel() {
     openModalOverlay("avatarViewModal");
 }
 
-/// ОБНОВЛЕННЫЙ МАГАЗИН: ВЫБОР ЦВЕТА ФОНА + КНОПКА RGB-ОБВОДКИ АВАТАРКИ
+// ОБНОВЛЕННЫЙ МАГАЗИН: ПАЛИТРА + ЗАГЛУШКА НА ОБВОДКУ
 function promptBuyBackground() {
     const overlay = document.createElement("div");
     overlay.className = "custom-prompt-overlay";
@@ -1007,17 +1007,17 @@ function promptBuyBackground() {
             
             <!-- РАЗДЕЛ 1: ЦВЕТ ФОНА -->
             <div style="text-align: left; margin-bottom: 15px;">
-                <label style="font-size: 13.5px; color: #fff; font-weight: 600; display: block; margin-bottom: 8px;">1. Выберите любой цвет фона профиля (100 🪙):</label>
-                <input type="color" id="fullColorPicker" value="#171e36" style="width: 100%; height: 45px; border: none; background: transparent; cursor: pointer; border-radius: 8px;">
-                <button class="custom-prompt-btn primary" style="width: 100%; margin: 8px 0 0 0; padding: 10px; font-size: 13px; background: var(--accent-color);" onclick="executeFullColorPurchase()">Купить и применить цвет</button>
+                <label style="font-size: 13.5px; color: #fff; font-weight: 600; display: block; margin-bottom: 6px;">1. Выберите любой цвет фона профиля (100 🪙):</label>
+                <input type="color" id="fullColorPicker" value="#171e36" style="width: 100%; height: 40px; border: none; background: transparent; cursor: pointer; border-radius: 8px;">
+                <button class="custom-prompt-btn primary" style="width: 100%; margin: 6px 0 0 0; padding: 10px; font-size: 13px; background: var(--accent-color);" onclick="executeFullColorPurchase()">Купить обычный цвет</button>
             </div>
             
-            <div style="border-top: 1px solid var(--border-color); margin: 15px 0;"></div>
+            <div style="border-top: 1px solid var(--border-color); margin: 12px 0;"></div>
             
-            <!-- РАЗДЕЛ 2: RGB ОБВОДКА -->
+            <!-- РАЗДЕЛ 2: RGB ОБВОДКА (ЗАГЛУШКА БЕТА-ТЕСТА) -->
             <div style="text-align: left; margin-bottom: 20px;">
-                <label style="font-size: 13.5px; color: #fff; font-weight: 600; display: block; margin-bottom: 8px;">2. Эксклюзивные эффекты для аватарки:</label>
-                <button class="custom-prompt-btn primary" style="width: 100%; margin: 0; padding: 12px; font-size: 13.5px; background: linear-gradient(45deg, #ff3344, #5865F2, #ffb11b); font-weight: 700; border: none;" onclick="executeRgbBorderPurchase()">КУПИТЬ РАДУЖНУЮ RGB-ОБВОДКУ (150 🪙)</button>
+                <label style="font-size: 13.5px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">2. Эффекты для аватарки:</label>
+                <button class="custom-prompt-btn" style="width: 100%; margin: 0; padding: 12px; font-size: 13px; background: #222634; border: 1px dashed #32384e; color: var(--text-muted); cursor: not-allowed; font-weight: 700;" disabled>🌈 RGB-ОБВОДКА (СКОРО В ПРОДАЖЕ / ТЕСТ)</button>
             </div>
             
             <div style="display: flex; justify-content: flex-end;">
@@ -1027,6 +1027,7 @@ function promptBuyBackground() {
     `;
     document.body.appendChild(overlay);
 }
+
 
 // Вспомогательная функция для покупки RGB-обводки аватарки
 function executeRgbBorderPurchase() {
