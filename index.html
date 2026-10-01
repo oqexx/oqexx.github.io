@@ -317,21 +317,19 @@
             border-color: rgba(255, 177, 27, 0.4);
             transform: translateX(4px);
         }
-               /* Продвинутый непрерывный перелив спектра по кругу */
-        @keyframes avatarRainbowGlow {
-            0% { background-position: 0% 50%; box-shadow: 0 0 15px rgba(88, 101, 242, 0.3); }
-            50% { background-position: 100% 50%; box-shadow: 0 0 20px rgba(255, 51, 68, 0.4); }
-            100% { background-position: 0% 50%; box-shadow: 0 0 15px rgba(88, 101, 242, 0.3); }
+                       /* Неоновое RGB свечение-контур вокруг аватарки */
+        @keyframes avatarRgbNeon {
+            0% { box-shadow: 0 0 0 4px #ff3344, 0 0 20px rgba(255, 51, 68, 0.6) !important; border-color: #ff3344 !important; }
+            33% { box-shadow: 0 0 0 4px #5865F2, 0 0 20px rgba(88, 101, 242, 0.6) !important; border-color: #5865F2 !important; }
+            66% { box-shadow: 0 0 0 4px #ffb11b, 0 0 20px rgba(255, 177, 27, 0.6) !important; border-color: #ffb11b !important; }
+            100% { box-shadow: 0 0 0 4px #ff3344, 0 0 20px rgba(255, 51, 68, 0.6) !important; border-color: #ff3344 !important; }
         }
 
-              .live-avatar-rgb {
-            padding: 4px !important; /* Делаем отступ, чтобы радуга вылезла наружу */
-            background: linear-gradient(45deg, #ff3344, #5865F2, #ffb11b, #00ff66, #ff3344) !important;
-            background-size: 400% 400% !important;
-            animation: avatarRainbowGlow 4s ease infinite !important;
-            border-radius: 50% !important;
+        .live-avatar-rgb {
+            animation: avatarRgbNeon 4s linear infinite !important;
+            border: 2px solid #ff3344 !important;
+            padding: 0 !important;
             box-sizing: border-box !important;
-            border: none !important; /* Убираем старую рамку */
         }
 
 
