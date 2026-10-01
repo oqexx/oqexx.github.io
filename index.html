@@ -944,18 +944,8 @@ function openAvatarViewModel() {
     openModalOverlay("avatarViewModal");
 }
 
+// ФУНКЦИЯ ВЫБОРА ЛЮБОГО ЦВЕТА ФОНА (ПОЛНЫЙ СПЕКТР ВСЕХ ЦВЕТОВ)
 function promptBuyBackground() {
-    uiConfirm("Покупка кастомизации", "Вы уверены, что хотите купить премиальный фон профиля за 100 коинов?", function(res) {
-        if (res) {
-            buyCustomization(100, "bg", "live_cyber");
-        }
-    });
-}
-
-
-
-function promptBuyBackground() {
-    // Создаем динамическое окно выбора прямо по центру за камерой
     const overlay = document.createElement("div");
     overlay.className = "custom-prompt-overlay";
     overlay.style.display = "flex";
@@ -963,32 +953,42 @@ function promptBuyBackground() {
     overlay.style.zIndex = "999999";
     
     overlay.innerHTML = `
-        <div class="custom-prompt-box" style="max-width: 400px; width: 90%;">
-            <h3 class="custom-prompt-title" style="font-size: 18px; margin-bottom: 5px;">🎨 Магазин кастомизации</h3>
-            <p class="custom-prompt-text" style="margin-bottom: 20px;">Выберите премиальный цвет фона вашего профиля. Стоимость любого фона — <span style="color:#ffb11b; font-weight:700;">100 🪙</span></p>
+        <div class="custom-prompt-box" style="max-width: 400px; width: 90%; text-align: center;">
+            <h3 class="custom-prompt-title" style="font-size: 18px; margin-bottom: 5px; text-align: left;">🎨 Выбор любого цвета фона</h3>
+            <p class="custom-prompt-text" style="margin-bottom: 20px; text-align: left;">Выберите абсолютно любой оттенок на графической палитре. Цена смены фона — <span style="color:#ffb11b; font-weight:700;">100 🪙</span></p>
             
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-                <button class="color-choice-btn bg-gradient-blue" onclick="executeColorPurchase('blue', this)">Синий градиент</button>
-                <button class="color-choice-btn bg-gradient-purple" onclick="executeColorPurchase('purple', this)">Фиолетовый градиент</button>
-                <button class="color-choice-btn bg-gradient-red" onclick="executeColorPurchase('red', this)">Красный градиент</button>
-            </div>
+            <!-- Инпут полноценной палитры спектра всех цветов -->
+            <input type="color" id="fullColorPicker" value="#171e36" style="width: 100%; height: 60px; border: none; background: transparent; cursor: pointer; margin-bottom: 20px; border-radius: 8px;">
             
-            <div style="display: flex; justify-content: flex-end;">
+            <div style="display: flex; justify-content: flex-end; gap: 12px;">
                 <button class="custom-prompt-btn secondary" style="margin: 0; padding: 10px 20px;" onclick="document.body.removeChild(this.closest('.custom-prompt-overlay'))">Отмена</button>
+                <button class="custom-prompt-btn primary" style="margin: 0; padding: 10px 20px; background: var(--accent-color);" onclick="executeFullColorPurchase()">Купить цвет</button>
             </div>
         </div>
     `;
     document.body.appendChild(overlay);
 }
 
-// Вспомогательная функция обработки клика по цвету
-function executeColorPurchase(colorKey, buttonElement) {
-    let overlay = buttonElement.closest('.custom-prompt-overlay');
+// Обработка покупки выбранного цвета
+function executeFullColorPurchase() {
+    let picker = document.getElementById("fullColorPicker");
+    let selectedColor = picker.value;
+    
+    let overlay = picker.closest('.custom-prompt-overlay');
     if (overlay) document.body.removeChild(overlay);
     
-    // Вызываем твою родную функцию покупки
-    buyCustomization(100, "bg", colorKey);
+    buyCustomization(100, "bg", selectedColor);
 }
+
+// ПОЛНЫЙ ФИКС КНОПКИ СТАТУСА (ТЕПЕРЬ ОНА НАЖИМАЕТСЯ)
+function promptBuyDescription() {
+    customPrompt("Покупка статуса профиля", "Введите новое описание или статус вашего профиля. Цена: 50 коинов.", function(desc) {
+        if (desc) {
+            buyCustomization(50, "desc", desc);
+        }
+    });
+}
+
 
 
 
