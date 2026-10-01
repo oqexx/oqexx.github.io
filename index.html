@@ -419,18 +419,18 @@
 <!-- Конец баннера Discord -->
          
                                                <h3>Последние новости Oqexx Software:</h3>
+                                <h3>Последние новости Oqexx Software:</h3>
                 <div class="news-wrapper">
                     <div class="news-card">
                         <div class="news-header">
                             <span class="news-tag tag-important" style="background: rgba(0, 255, 102, 0.15); color: var(--color-success);">ГЛОБАЛЬНОЕ ОБНОВЛЕНИЕ</span>
                             <span class="news-date">01.10.2026</span>
                         </div>
-                        <h4 class="news-title">🛠️ UPDATE v2.6: Премиальный дизайн профиля и чистка интерфейса</h4>
-                        <p class="news-text" style="margin-bottom: 8px;">Встречайте свежий патч оптимизации визуальной составляющей вашего Личного Кабинета:</p>
+                        <h4 class="news-title">🛠️ UPDATE v2.7: Интеграция магазина доната и подготовка к релизу</h4>
+                        <p class="news-text" style="margin-bottom: 8px;">Мы добавили витрину будущих товаров софта oqexx для ознакомления со стоимостью подписок:</p>
                         <ul style="margin: 0; padding-left: 20px; color: var(--text-muted); font-size: 14px; line-height: 1.6;">
-                            <li><strong style="color: #fff;">Магазин фонов:</strong> Полностью удалены старые лагающие RGB-переливы. Вместо них интегрирован благородный статичный тёмно-синий градиент профиля, который теперь можно полноценно приобрести за 100 коинов!</li>
-                            <li><strong style="color: #fff;">Очистка GUI:</strong> Из бокового меню удалён дубликат кнопки изменения аватара. Интерфейс профиля стал чище и аккуратнее. Поменять аватарку по-прежнему можно в один клик при детальном просмотре профиля.</li>
-                            <li><strong style="color: #fff;">Система тикетов:</strong> Стабилизирована работа центра поддержки, баг-репорты доставляются разработчику мгновенно.</li>
+                            <li><strong style="color: #fff;">Витрина товаров:</strong> Добавлен раздел ценников на подписки софта (5 и 10 дней), а также паки коинов для кастомизации профиля ЛК.</li>
+                            <li><strong style="color: #fff;">Оповещения OBT:</strong> Интегрирована автоматическая система уведомлений о завершении бета-теста при попытке симулировать покупку товаров.</li>
                         </ul>
                     </div>
 
@@ -443,7 +443,45 @@
                         <p class="news-text">Вышло крупное обновление безопасности. Полностью переписаны алгоритмы инжекта .exe софта, обновлены сигнатуры для беспрепятственного обхода систем защиты.</p>
                     </div>
                 </div>
+                <!-- МАЗАЗИН ЛИЦЕНЗИЙ И КОИНОВ (ДОНАТ) -->
+                <h3 style="margin-top: 35px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                    <span>🛒</span> Магазин подписок и Coin-паков
+                </h3>
+                <div class="shop-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 35px; font-family: sans-serif;">
+                    
+                    <!-- Товар 1 -->
+                    <div onclick="showShopStub('Подписка Oqexx Software (5 дней)')" style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; text-align: center; cursor: pointer; transition: all 0.25s ease;" onmouseover="this.style.borderColor='var(--accent-color)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='translateY(0)'">
+                        <span style="font-size: 11px; background: rgba(81, 88, 226, 0.15); color: #767df5; padding: 4px 10px; border-radius: 6px; font-weight: 800; text-transform: uppercase;">Биндер софт</span>
+                        <strong style="display: block; font-size: 18px; color: #fff; margin: 12px 0 6px 0;">Лицензия 5 дней</strong>
+                        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Полный PRO доступ к функциям</div>
+                        <div style="font-size: 18px; color: var(--color-success); font-weight: 700;">149 ₽</div>
+                    </div>
 
+                    <!-- Товар 2 -->
+                    <div onclick="showShopStub('Подписка Oqexx Software (10 дней)')" style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; text-align: center; cursor: pointer; transition: all 0.25s ease;" onmouseover="this.style.borderColor='var(--accent-color)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='translateY(0)'">
+                        <span style="font-size: 11px; background: rgba(81, 88, 226, 0.15); color: #767df5; padding: 4px 10px; border-radius: 6px; font-weight: 800; text-transform: uppercase;">Выгодный выбор</span>
+                        <strong style="display: block; font-size: 18px; color: #fff; margin: 12px 0 6px 0;">Лицензия 10 дней</strong>
+                        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Полный PRO доступ к функциям</div>
+                        <div style="font-size: 18px; color: var(--color-success); font-weight: 700;">249 ₽</div>
+                    </div>
+
+                    <!-- Товар 3 -->
+                    <div onclick="showShopStub('Пакет 500 Коинов')" style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; text-align: center; cursor: pointer; transition: all 0.25s ease;" onmouseover="this.style.borderColor='var(--color-warning)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='translateY(0)'">
+                        <span style="font-size: 11px; background: rgba(255, 177, 27, 0.1); color: var(--color-warning); padding: 4px 10px; border-radius: 6px; font-weight: 800; text-transform: uppercase;">Кастомизация</span>
+                        <strong style="display: block; font-size: 18px; color: #fff; margin: 12px 0 6px 0;">500 🪙 Пак коинов</strong>
+                        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">На статусы и любые цвета фона</div>
+                        <div style="font-size: 18px; color: #ffb11b; font-weight: 700;">99 ₽</div>
+                    </div>
+
+                    <!-- Товар 4 -->
+                    <div onclick="showShopStub('Пакет 1500 Коинов')" style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 20px; border-radius: 14px; text-align: center; cursor: pointer; transition: all 0.25s ease;" onmouseover="this.style.borderColor='var(--color-warning)'; this.style.transform='translateY(-3px)'" onmouseout="this.style.borderColor='var(--border-color)'; this.style.transform='translateY(0)'">
+                        <span style="font-size: 11px; background: rgba(255, 177, 27, 0.1); color: var(--color-warning); padding: 4px 10px; border-radius: 6px; font-weight: 800; text-transform: uppercase;">Премиум пак</span>
+                        <strong style="display: block; font-size: 18px; color: #fff; margin: 12px 0 6px 0;">1500 🪙 Пак коинов</strong>
+                        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Хватит на полную прокачку ЛК</div>
+                        <div style="font-size: 18px; color: #ffb11b; font-weight: 700;">199 ₽</div>
+                    </div>
+
+                </div>
 
 
                 <div style="font-size: 15px; color: #fff; margin-bottom: 5px; font-weight: 600;">Генерация лицензий софта</div>
@@ -1162,6 +1200,14 @@ function clearAllReports() {
             uiAlert("Готово", "Все тикеты успешно удалены.");
         }
     });
+}
+
+// Функция вывода заглушки доната Oqexx Software
+function showShopStub(itemName) {
+    uiAlert(
+        "🛒 СКОРО В ПРОДАЖЕ", 
+        `Вы выбрали товар: "${itemName}".\n\nВ данный момент Oqexx Software проходит стадию открытого Beta-тестирования (OBT), поэтому все функции и промокоды выдаются абсолютно бесплатно!\n\nПолноценная оплата и автоматическая выдача товаров запустятся сразу после завершения бета-теста. Следите за сроками и анонсами в нашем Discord-канале!`
+    );
 }
 
 </script>
