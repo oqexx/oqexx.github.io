@@ -317,12 +317,23 @@
             border-color: rgba(255, 177, 27, 0.4);
             transform: translateX(4px);
         }
-        /* Кастомный красивый скроллбар для админки */
-        #adminReportsContainer::-webkit-scrollbar { width: 6px; }
-        #adminReportsContainer::-webkit-scrollbar-track { background: transparent; }
-        #adminReportsContainer::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
-        #adminReportsContainer::-webkit-scrollbar-thumb:hover { background: var(--accent-color); }
- 
+               /* Продвинутый непрерывный перелив спектра по кругу */
+        @keyframes avatarRainbowGlow {
+            0% { background-position: 0% 50%; box-shadow: 0 0 15px rgba(88, 101, 242, 0.3); }
+            50% { background-position: 100% 50%; box-shadow: 0 0 20px rgba(255, 51, 68, 0.4); }
+            100% { background-position: 0% 50%; box-shadow: 0 0 15px rgba(88, 101, 242, 0.3); }
+        }
+
+        .live-avatar-rgb {
+            padding: 2px !important; /* Зазор для видимости градиента */
+            background: linear-gradient(45deg, #ff3344, #5865F2, #ffb11b, #00ff66, #ff3344) !important;
+            background-size: 400% 400% !important;
+            animation: avatarRainbowGlow 4s ease infinite !important;
+            border-radius: 50% !important;
+            border: none !important; /* Убираем стандартную рамку для работы градиента */
+        }
+
+
     </style>
 </head>
 <body>
