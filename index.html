@@ -261,10 +261,40 @@
 @keyframes modalFadeIn { to { opacity: 1; } }
 @keyframes modalScaleIn { to { transform: scale(1); } }
     
-        /* Премиальный статичный фон профиля */
-        .live-bg-cyber { 
-            background: linear-gradient(135deg, #131622 0%, #1a1f36 50%, #121420 100%) !important;
-            border: 1px solid rgba(81, 88, 226, 0.25) !important;
+                /* 3 новых премиальных фонов для профиля */
+        .bg-gradient-blue { 
+            background: linear-gradient(135deg, #0d111a 0%, #171e36 50%, #0a0d14 100%) !important;
+            border: 1px solid rgba(81, 88, 226, 0.35) !important;
+            box-shadow: inset 0 0 20px rgba(81, 88, 226, 0.15) !important;
+        }
+        .bg-gradient-purple { 
+            background: linear-gradient(135deg, #110d1a 0%, #291736 50%, #0d0a14 100%) !important;
+            border: 1px solid rgba(166, 81, 226, 0.35) !important;
+            box-shadow: inset 0 0 20px rgba(166, 81, 226, 0.15) !important;
+        }
+        .bg-gradient-red { 
+            background: linear-gradient(135deg, #1a0d0d 0%, #361717 50%, #140a0a 100%) !important;
+            border: 1px solid rgba(226, 81, 81, 0.35) !important;
+            box-shadow: inset 0 0 20px rgba(226, 81, 81, 0.15) !important;
+        }
+
+        /* Стиль для плашек выбора цвета в самом окне */
+        .color-choice-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .color-choice-btn:hover {
+            transform: scale(1.03);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
  @keyframes rotation { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -579,9 +609,16 @@ function applyCustomization() {
     
     let profileCard = document.querySelector(".profile-container");
     if (profileCard) {
-        profileCard.classList.remove("live-bg-cyber");
-        if (bg === "live_cyber") {
-            profileCard.classList.add("live-bg-cyber");
+        // Чистим абсолютно все старые классы перед применением нового, чтобы они не накладывались
+        profileCard.classList.remove("bg-gradient-blue", "bg-gradient-purple", "bg-gradient-red", "live-bg-cyber");
+        
+        // Исправляем баг: проверяем ключ в localStorage и выдаем нужный класс
+        if (bg === "blue" || bg === "live_cyber") {
+            profileCard.classList.add("bg-gradient-blue");
+        } else if (bg === "purple") {
+            profileCard.classList.add("bg-gradient-purple");
+        } else if (bg === "red") {
+            profileCard.classList.add("bg-gradient-red");
         } else {
             profileCard.style.background = bg;
         }
@@ -590,7 +627,6 @@ function applyCustomization() {
     let descEl = document.getElementById("userDescription");
     if (descEl) descEl.innerText = desc;
 
-    // Вешаем RGB-анимацию на весь контейнер аватарки, чтобы она светилась по кругу
     let avatarWrapper = document.querySelector(".avatar-wrapper");
     if (avatarWrapper) {
         avatarWrapper.classList.remove("live-avatar-rgb");
@@ -602,6 +638,7 @@ function applyCustomization() {
         }
     }
 }
+
 
 
 
@@ -917,11 +954,42 @@ function promptBuyBackground() {
 
 
 
-function promptBuyDescription() {
-    customPrompt("Покупка статуса профиля", "Введите новое описание вашего профиля. Цена: 50 коинов.", function(desc) {
-        buyCustomization(50, "desc", desc);
-    });
+function promptBuyBackground() {
+    // Создаем динамическое окно выбора прямо по центру за камерой
+    const overlay = document.createElement("div");
+    overlay.className = "custom-prompt-overlay";
+    overlay.style.display = "flex";
+    overlay.style.opacity = "1";
+    overlay.style.zIndex = "999999";
+    
+    overlay.innerHTML = `
+        <div class="custom-prompt-box" style="max-width: 400px; width: 90%;">
+            <h3 class="custom-prompt-title" style="font-size: 18px; margin-bottom: 5px;">🎨 Магазин кастомизации</h3>
+            <p class="custom-prompt-text" style="margin-bottom: 20px;">Выберите премиальный цвет фона вашего профиля. Стоимость любого фона — <span style="color:#ffb11b; font-weight:700;">100 🪙</span></p>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                <button class="color-choice-btn bg-gradient-blue" onclick="executeColorPurchase('blue', this)">Синий градиент</button>
+                <button class="color-choice-btn bg-gradient-purple" onclick="executeColorPurchase('purple', this)">Фиолетовый градиент</button>
+                <button class="color-choice-btn bg-gradient-red" onclick="executeColorPurchase('red', this)">Красный градиент</button>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="custom-prompt-btn secondary" style="margin: 0; padding: 10px 20px;" onclick="document.body.removeChild(this.closest('.custom-prompt-overlay'))">Отмена</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
 }
+
+// Вспомогательная функция обработки клика по цвету
+function executeColorPurchase(colorKey, buttonElement) {
+    let overlay = buttonElement.closest('.custom-prompt-overlay');
+    if (overlay) document.body.removeChild(overlay);
+    
+    // Вызываем твою родную функцию покупки
+    buyCustomization(100, "bg", colorKey);
+}
+
 
 
 function promptActivateCoinCoupon() {
