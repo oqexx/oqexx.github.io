@@ -941,45 +941,17 @@ function customPrompt(title, text, callback) {
 function openAvatarViewModel() {
     let savedAvatar = localStorage.getItem("oqexx_avatar_" + currentUser);
     if (!savedAvatar) {
-        if (typeof uiAlert === "function") uiAlert("Информация", "У вас не установлена кастомная аватарка.");
+        uiAlert("Информация", "У вас не установлена кастомная аватарка.");
         return;
     }
-    
-    const viewOverlay = document.createElement("div");
-    viewOverlay.className = "custom-prompt-overlay";
-    viewOverlay.style.background = "rgba(10, 11, 15, 0.95)";
-    viewOverlay.onclick = () => document.body.removeChild(viewOverlay);
-    
-    viewOverlay.innerHTML = `
-        <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 15px; text-align: center;">
-            <img src="${savedAvatar}" style="max-width: 90vw; max-height: 70vh; border-radius: 12px; border: 2px solid #222634; box-shadow: 0 10px 40px rgba(0,0,0,0.6); transform: scale(0.9); animation: modalScaleIn 0.2s forwards;">
-            <span style="color: #768390; font-size: 13px; font-weight: 500;">Кликните в любое место, чтобы закрыть просмотр</span>
-        </div>
-    `;
-    document.body.appendChild(viewOverlay);
+    document.getElementById("modalAvatarImg").src = savedAvatar;
+    openModalOverlay("avatarViewModal");
 }
 
-// Перевод магазина в красивый анимированный режим тех. работ
 function promptBuyBackground() {
-    const overlay = document.createElement("div");
-    overlay.className = "custom-prompt-overlay";
-    
-    overlay.innerHTML = `
-        <div class="custom-prompt-box" style="max-width: 400px; background: #0b0c10; border: 1px solid #1f2330; padding: 24px; border-radius: 16px; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 15px;">
-            <div style="font-size: 40px; animation: rotation 4s linear infinite; display: inline-block;">🛠️</div>
-            <h3 class="custom-prompt-title" style="font-size: 20px; color: #fff; font-weight: 800; margin: 0; letter-spacing: 0.5px;">ТЕХНИЧЕСКИЕ РАБОТЫ</h3>
-            <p class="custom-prompt-text" style="color: #626f82; font-size: 14px; margin: 0; line-height: 1.5;">
-                Магазин кастомизации профиля и живых фонов временно находится на обслуживании. Мы улучшаем анимации и палитру цветов, чтобы GUI работал идеально!
-            </p>
-            <div style="width: 100%; height: 1px; background: #1f2330; margin: 5px 0;"></div>
-            <button onclick="document.body.removeChild(this.closest('.custom-prompt-overlay'))" style="width: 100%; background: #238636; border: none; color: #fff; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#2ea043'" onmouseout="this.style.background='#238636'">
-                Понятно
-            </button>
-        </div>
-    `;
-    
-    document.body.appendChild(overlay);
+    uiAlert("🛠️ ТЕХНИЧЕСКИЕ РАБОТЫ", "Магазин кастомизации профиля и живых фонов временно находится на обслуживании. Мы улучшаем анимации и палитру цветов! Приходите позже.");
 }
+
 
 function promptBuyDescription() {
     customPrompt("Покупка статуса профиля", "Введите новое описание вашего профиля. Цена: 50 коинов.", function(desc) {
