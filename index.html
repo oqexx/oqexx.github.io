@@ -502,6 +502,148 @@
     box-shadow: 0 12px 30px rgba(81, 88, 226, 0.5);
 }
     
+    /* ============================================ */
+/* === OQEXX PREMIUM SKIN — глобальные улучшения === */
+/* ============================================ */
+
+/* 1. Красивый кастомный скроллбар */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0a0c12; }
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #5158e2, #3a45c3);
+    border-radius: 10px;
+    border: 2px solid #0a0c12;
+}
+::-webkit-scrollbar-thumb:hover { background: #5158e2; }
+
+/* 2. Красивое выделение текста */
+::selection { background: rgba(81, 88, 226, 0.45); color: #fff; }
+::-moz-selection { background: rgba(81, 88, 226, 0.45); color: #fff; }
+
+/* 3. Плавная прокрутка */
+html { scroll-behavior: smooth; }
+
+/* 4. Блик на всех кнопках .btn-primary при наведении */
+.btn-primary {
+    position: relative;
+    overflow: hidden;
+}
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -120%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+    transition: left 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+.btn-primary:hover::before { left: 120%; }
+
+/* 5. Анимированный градиент у логотипа Oqexx */
+.brand-title {
+    background-size: 200% auto !important;
+    animation: brandShift 6s linear infinite;
+}
+@keyframes brandShift {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+/* 6. Неоновая полоса слева от каждого h3 в контенте */
+.content-area h3 {
+    position: relative;
+    padding-left: 16px !important;
+}
+.content-area h3::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 4px; height: 65%;
+    background: linear-gradient(180deg, #5158e2, #a651e2);
+    border-radius: 4px;
+    box-shadow: 0 0 12px rgba(81, 88, 226, 0.65);
+}
+
+/* 7. Статистика — цифры с градиентом */
+.stat-widget div:last-child {
+    background: linear-gradient(135deg, #ffffff 30%, #a0a8ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 8. Карточки новостей и виджеты — глубокий ховер */
+.news-card {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.news-card:hover {
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45), 0 0 35px rgba(81, 88, 226, 0.12);
+}
+.stat-widget {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.stat-widget:hover {
+    transform: translateY(-3px);
+    border-color: rgba(81, 88, 226, 0.45);
+    box-shadow: 0 12px 30px rgba(81, 88, 226, 0.15);
+}
+
+/* 9. Главный блок — многослойная тень с неоновым ореолом */
+#mainBlock {
+    box-shadow:
+        0 50px 100px rgba(0, 0, 0, 0.85),
+        0 0 0 1px rgba(81, 88, 226, 0.08),
+        0 0 130px rgba(81, 88, 226, 0.09) !important;
+}
+
+/* 10. Иконка Discord на баннере — плавно парит */
+.discord-news-banner svg {
+    animation: discordFloat 5s ease-in-out infinite;
+}
+@keyframes discordFloat {
+    0%, 100% { transform: rotate(-15deg) translateY(0); }
+    50%      { transform: rotate(-10deg) translateY(-12px); }
+}
+
+/* 11. Аватарка — мягкое свечение по умолчанию */
+.avatar-wrapper {
+    box-shadow: 0 0 22px rgba(81, 88, 226, 0.18);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 12. Инпуты — лёгкий подъём при фокусе */
+input[type="text"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+    transform: translateY(-1px);
+}
+
+/* 13. Пункты F.A.Q. — подсветка активного */
+.faq-item.active {
+    border-color: rgba(81, 88, 226, 0.45) !important;
+    box-shadow: 0 8px 25px rgba(81, 88, 226, 0.12);
+}
+
+/* 14. Кнопка коинов — мягкое золотое свечение */
+#coinBalance {
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    text-shadow: 0 0 12px rgba(255, 177, 27, 0.5);
+}
+#coinBalance:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 20px rgba(255, 177, 27, 0.3);
+}
+
+/* 15. Плашка "ГЛОБАЛЬНОЕ ОБНОВЛЕНИЕ" — пульсация */
+.news-tag.tag-important {
+    animation: tagPulse 2.4s ease-in-out infinite;
+}
+@keyframes tagPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 102, 0.35); }
+    50%      { box-shadow: 0 0 0 8px rgba(0, 255, 102, 0); }
+}
+    
     </style>
 </head>
 <body>
