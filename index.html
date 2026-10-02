@@ -633,21 +633,7 @@ function buyCustomization(cost, type, value) {
     return true;
 }
 
-// Исправленная функция покупки с поддержкой всех типов кастомизации
-function buyCustomization(cost, type, value) {
-    let balance = getCoins();
-    if (balance < cost) {
-        uiAlert("Ошибка", "Недостаточно коинов! Активируйте купоны.");
-        return false;
-    }
-    
-    localStorage.setItem("oqexx_coins_" + currentUser, balance - cost);
-    localStorage.setItem("oqexx_" + type + "_" + currentUser, value);
-    updateCoinsUI();
-    applyCustomization();
-    uiAlert("Успешно", "Эффект успешно куплен и применен!");
-    return true;
-}
+
 
 // Исправленное и точное применение эффектов
 function applyCustomization() {
@@ -672,16 +658,15 @@ function applyCustomization() {
     let descEl = document.getElementById("userDescription");
     if (descEl) descEl.innerText = desc;
 
-    // ФИКС ОБВОДКИ: Находим аватарку напрямую по ID её картинки
-    let avatarImg = document.getElementById("avatarDisplay");
-    if (avatarImg) {
-        avatarImg.classList.remove("live-avatar-rgb");
+        // ФИКС ОБВОДКИ: навешиваем класс на .avatar-wrapper, а не на саму картинку
+    let avatarWrap = document.querySelector(".avatar-wrapper");
+    if (avatarWrap) {
+        avatarWrap.classList.remove("live-avatar-rgb");
         if (borderStyle === "rgb") {
-            avatarImg.classList.add("live-avatar-rgb");
+            avatarWrap.classList.add("live-avatar-rgb");
         } else {
-            avatarImg.style.border = "2px solid #2e3446";
-            avatarImg.style.boxShadow = "none";
-            avatarImg.style.padding = "0";
+            avatarWrap.style.border = "2px solid #2e3446";
+            avatarWrap.style.boxShadow = "none";
         }
     }
 }
@@ -1017,7 +1002,7 @@ function promptBuyBackground() {
             <!-- РАЗДЕЛ 2: RGB ОБВОДКА (ЗАГЛУШКА БЕТА-ТЕСТА) -->
             <div style="text-align: left; margin-bottom: 20px;">
                 <label style="font-size: 13.5px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">2. Эффекты для аватарки:</label>
-                <button class="custom-prompt-btn" style="width: 100%; margin: 0; padding: 12px; font-size: 13px; background: #222634; border: 1px dashed #32384e; color: var(--text-muted); cursor: not-allowed; font-weight: 700;" disabled>🌈 RGB-ОБВОДКА (СКОРО В ПРОДАЖЕ / ТЕСТ)</button>
+               <button class="custom-prompt-btn primary" style="width: 100%; margin: 0; padding: 12px; font-size: 13px; background: linear-gradient(135deg, #ff3344, #5865F2, #ffb11b); color: #fff; font-weight: 700; border: none; cursor: pointer;" onclick="executeRgbBorderPurchase()">🌈 RGB-ОБВОДКА АВАТАРКИ (150 🪙)</button>
             </div>
             
             <div style="display: flex; justify-content: flex-end;">
@@ -1034,9 +1019,10 @@ function executeRgbBorderPurchase() {
     let overlay = document.querySelector('.custom-prompt-overlay');
     if (overlay) document.body.removeChild(overlay);
     
-    // Вызываем твою родную функцию покупки. 
-    // Спишет 150 коинов и включит стиль "rgb", который мы только что настроили в CSS!
-    buyCustomization(150, "border", "rgb");
+    let ok = buyCustomization(150, "border", "rgb");
+    if (ok) {
+        uiAlert("Успешно ✨", "RGB-обводка активирована! Смотри на свою аватарку 😎");
+    }
 }
 
 
