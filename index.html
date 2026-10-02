@@ -1732,12 +1732,50 @@ function showPreloader(onDone) {
     }, 420);
 }
 
-// Оборачиваем openDashboard — панель открывается только ПОСЛЕ прелоадера
+// Оборачиваем openDashboard — прелоадер поверх, панель УЖЕ под ним
 const __realOpenDashboard = openDashboard;
 openDashboard = function() {
-    showPreloader(function() {
-        __realOpenDashboard();
-    });
+    let pl = document.getElementById("preloader");
+    if (!pl) { __realOpenDashboard(); return; }
+    
+    // 1. СНАЧАЛА переключаем auth → панель под прелоадером
+    __realOpenDashboard();
+    
+    // 2. Показываем прелоадер ПОВЕРХ уже готовой панели
+    pl.classList.remove("out");
+    pl.classList.add("on");
+    
+    let fill = document.getElementById("plFill");
+    let status = document.getElementById("plStatus");
+    fill.style.width = "0%";
+    
+    const steps = [
+        { p: 22,  t: "Подключение к серверу..." },
+        { p: 48,  t: "Проверка сессии..." },
+        { p: 72,  t: "Загрузка профиля..." },
+        { p: 91,  t: "Синхронизация данных..." },
+        { p: 100, t: "Добро пожаловать!" }
+    ];
+    
+    let i = 0;
+    status.innerText = steps[0].t;
+    
+    const timer = setInterval(function() {
+        i++;
+        if (i >= steps.length) {
+            clearInterval(timer);
+            setTimeout(function() {
+                pl.classList.add("out");
+                setTimeout(function() {
+                    pl.classList.remove("on");
+                    pl.classList.remove("out");
+                }, 600);
+            }, 350);
+            return;
+        }
+        fill.style.width = steps[i].p + "%";
+        status.innerText = steps[i].t;
+    }, 420);
 };
 
 </script>
