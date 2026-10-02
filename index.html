@@ -1424,6 +1424,79 @@ document.addEventListener("keydown", function(e) {
     </div>
 </div>
 
+</script>
+
+<!-- 🌙 ЛЕТЯЩИЕ ЛУНЫ ПО ВСЕМУ САЙТУ -->
+<style>
+#moonField {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1000;
+    overflow: hidden;
+}
+#moonField .moon {
+    position: absolute;
+    top: -60px;
+    border-radius: 50%;
+    background: transparent;
+    will-change: transform, opacity;
+    animation: moonFall linear infinite;
+    opacity: 0;
+    filter: drop-shadow(0 0 6px rgba(255, 234, 167, 0.75));
+}
+@keyframes moonFall {
+    0% {
+        transform: translateY(-60px) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+    8%  { opacity: 0.9; }
+    92% { opacity: 0.9; }
+    100% {
+        transform: translateY(110vh) translateX(var(--sway, 0px)) rotate(var(--rot, 360deg));
+        opacity: 0;
+    }
+}
+@media (max-width: 600px) {
+    #moonField .moon { filter: none; }
+}
+</style>
+
+<div id="moonField"></div>
+
+<script>
+(function makeMoonField() {
+    const field = document.getElementById("moonField");
+    if (!field) return;
+    const isMobile = window.innerWidth < 700;
+    const COUNT = isMobile ? 14 : 32; // на телефоне меньше — экономим батарею
+    
+    for (let i = 0; i < COUNT; i++) {
+        const m = document.createElement("div");
+        m.className = "moon";
+        
+        const size  = 10 + Math.random() * 22;        // 10–32px
+        const dur   = 14 + Math.random() * 20;        // 14–34 сек полёт
+        const delay = -Math.random() * 30;            // разброс по времени
+        const left  = Math.random() * 100;            // % слева
+        const sway  = (Math.random() - 0.5) * 300;    // горизонтальное колыхание
+        const rot   = (Math.random() > 0.5 ? 1 : -1) * (180 + Math.random() * 360);
+        
+        m.style.width  = size + "px";
+        m.style.height = size + "px";
+        m.style.left   = left + "%";
+        m.style.animationDuration = dur + "s";
+        m.style.animationDelay    = delay + "s";
+        m.style.setProperty("--sway", sway.toFixed(0) + "px");
+        m.style.setProperty("--rot",  rot.toFixed(0) + "deg");
+        
+        // Внутренний box-shadow рисует серп (как банан) — правый край прозрачный
+        m.style.boxShadow = `inset ${-size * 0.32}px ${-size * 0.06}px 0 0 #ffeaa7`;
+        
+        field.appendChild(m);
+    }
+})();
+</script>
 </body>
 </html>
 
