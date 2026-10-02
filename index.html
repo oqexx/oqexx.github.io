@@ -644,6 +644,154 @@ textarea:focus {
     50%      { box-shadow: 0 0 0 8px rgba(0, 255, 102, 0); }
 }
     
+  /* === ПРЕЛОАДЕР ПОСЛЕ ВХОДА === */
+#preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 99999999;
+    background: radial-gradient(circle at 50% 40%, #141729 0%, #060709 70%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow: hidden;
+}
+#preloader.on { display: flex; animation: plFadeIn 0.4s ease both; }
+#preloader.out { animation: plFadeOut 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes plFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes plFadeOut {
+    to { opacity: 0; transform: scale(1.06); filter: blur(8px); }
+}
+
+#preloader::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(circle at 30% 30%, rgba(81,88,226,0.28), transparent 45%),
+                radial-gradient(circle at 70% 70%, rgba(166,81,226,0.22), transparent 45%);
+    animation: plBgSpin 15s linear infinite;
+    pointer-events: none;
+}
+@keyframes plBgSpin {
+    from { transform: rotate(0); }
+    to   { transform: rotate(360deg); }
+}
+
+.pl-content { position: relative; z-index: 2; text-align: center; padding: 20px; }
+
+.pl-logo {
+    font-size: 46px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #fff 20%, #5158e2 60%, #a651e2 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: plLogo 2s linear infinite, plLogoIn 0.7s cubic-bezier(0.16,1,0.3,1) both;
+    filter: drop-shadow(0 0 25px rgba(81,88,226,0.45));
+    margin-bottom: 8px;
+}
+@keyframes plLogo { to { background-position: 200% center; } }
+@keyframes plLogoIn {
+    from { opacity: 0; transform: translateY(-15px) scale(0.94); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.pl-subtitle {
+    font-size: 11px;
+    color: #7e8799;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 50px;
+    animation: plFadeUp 0.6s 0.2s cubic-bezier(0.16,1,0.3,1) both;
+}
+@keyframes plFadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.pl-spinner {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 40px;
+    position: relative;
+    animation: plFadeUp 0.6s 0.35s cubic-bezier(0.16,1,0.3,1) both;
+}
+.pl-spinner::before,
+.pl-spinner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid transparent;
+}
+.pl-spinner::before {
+    border-top-color: #5158e2;
+    border-right-color: #5158e2;
+    animation: plSpin 1.2s linear infinite;
+    filter: drop-shadow(0 0 10px rgba(81,88,226,0.7));
+}
+.pl-spinner::after {
+    inset: 11px;
+    border-bottom-color: #a651e2;
+    border-left-color: #a651e2;
+    animation: plSpin 1.8s linear infinite reverse;
+    filter: drop-shadow(0 0 10px rgba(166,81,226,0.6));
+}
+@keyframes plSpin { to { transform: rotate(360deg); } }
+
+.pl-bar-wrap {
+    width: 260px;
+    margin: 0 auto;
+    animation: plFadeUp 0.6s 0.5s cubic-bezier(0.16,1,0.3,1) both;
+}
+.pl-bar {
+    height: 5px;
+    background: rgba(81,88,226,0.12);
+    border-radius: 100px;
+    overflow: hidden;
+    position: relative;
+}
+.pl-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #5158e2, #a651e2);
+    border-radius: 100px;
+    transition: width 0.35s ease;
+    position: relative;
+    box-shadow: 0 0 15px rgba(81,88,226,0.6);
+}
+.pl-bar-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+    animation: plShimmer 1.2s infinite;
+}
+@keyframes plShimmer {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(100%); }
+}
+
+.pl-status {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #7e8799;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+    min-height: 16px;
+}
+
+@media (max-width: 600px) {
+    .pl-logo { font-size: 34px; }
+    .pl-bar-wrap { width: 220px; }
+    .pl-spinner { width: 65px; height: 65px; margin-bottom: 32px; }
+}  
+    
     </style>
 </head>
 <body>
@@ -1543,6 +1691,54 @@ document.addEventListener("keydown", function(e) {
     if (e.key === "Escape") closeTechModal();
 });
 
+// ============ ПРЕЛОАДЕР ПОСЛЕ ВХОДА ============
+function showPreloader(onDone) {
+    let pl = document.getElementById("preloader");
+    let fill = document.getElementById("plFill");
+    let status = document.getElementById("plStatus");
+    if (!pl) { onDone && onDone(); return; }
+    
+    pl.classList.remove("out");
+    pl.classList.add("on");
+    fill.style.width = "0%";
+    
+    const steps = [
+        { p: 22,  t: "Подключение к серверу..." },
+        { p: 48,  t: "Проверка сессии..." },
+        { p: 72,  t: "Загрузка профиля..." },
+        { p: 91,  t: "Синхронизация данных..." },
+        { p: 100, t: "Добро пожаловать!" }
+    ];
+    
+    let i = 0;
+    status.innerText = steps[0].t;
+    
+    const timer = setInterval(function() {
+        i++;
+        if (i >= steps.length) {
+            clearInterval(timer);
+            setTimeout(function() {
+                pl.classList.add("out");
+                setTimeout(function() {
+                    pl.classList.remove("on");
+                    pl.classList.remove("out");
+                    onDone && onDone();
+                }, 600);
+            }, 350);
+            return;
+        }
+        fill.style.width = steps[i].p + "%";
+        status.innerText = steps[i].t;
+    }, 420);
+}
+
+// Оборачиваем openDashboard — панель открывается только ПОСЛЕ прелоадера
+const __realOpenDashboard = openDashboard;
+openDashboard = function() {
+    showPreloader(function() {
+        __realOpenDashboard();
+    });
+};
 
 </script>
 
@@ -1638,6 +1834,20 @@ document.addEventListener("keydown", function(e) {
     }
 })();
 </script>
+
+<!-- === ПРЕЛОАДЕР === -->
+<div id="preloader">
+    <div class="pl-content">
+        <div class="pl-logo">Oqexx Software</div>
+        <div class="pl-subtitle">Panel v4.5 PRO</div>
+        <div class="pl-spinner"></div>
+        <div class="pl-bar-wrap">
+            <div class="pl-bar"><div class="pl-bar-fill" id="plFill"></div></div>
+            <div class="pl-status" id="plStatus">Подключение к серверу...</div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
 
