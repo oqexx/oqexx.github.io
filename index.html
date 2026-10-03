@@ -1092,6 +1092,15 @@ let modalCallback = null;
 
 function openModalOverlay(overlayId) {
     let overlay = document.getElementById(overlayId);
+    
+    // 🔥 ФИКС: убираем transform у mainBlock чтобы модалка легла на весь экран
+    let mb = document.getElementById("mainBlock");
+    if (mb) {
+        mb.style.animation = "none";
+        mb.style.transform = "none";
+        mb.style.filter = "none";
+    }
+    
     overlay.style.display = "flex";
     setTimeout(() => { overlay.classList.add("active"); }, 10);
 }
