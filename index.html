@@ -1221,8 +1221,11 @@ if (localStorage.getItem("oqexx_coupons_version") !== couponsVersion) {
 let couponDatabase = JSON.parse(localStorage.getItem("oqexx_coupons"));
 
 window.onload = function() {
-    let ss = localStorage.getItem("oqexx_session");
-    if (ss) { currentUser = ss; openDashboard(); }
+    let uid = localStorage.getItem("oqexx_session_uid");
+    if (uid) {
+        currentUser = uid;
+        // Firebase сам проверит и вызовет openDashboard через onAuthStateChanged
+    }
 };
 
 function uploadAvatar(files) {
@@ -1343,17 +1346,85 @@ function applyCustomization() {
 }
 
 
-function processAuth() {
-    let u = document.getElementById("username").value.trim().toLowerCase(), p = document.getElementById("password").value.trim(), users = JSON.parse(localStorage.getItem("oqexx_users") || "{}");
-    if (!u || !p) { uiAlert("Ошибка авторизации", "Пожалуйста, заполните все поля ввода!"); return; }
-    if (isRegisterMode) {
-        if (u === "oqexx") { uiAlert("Ошибка", "Логин разработчика зарезервирован системой!"); return; }
-        if (users.hasOwnProperty(u)) { uiAlert("Ошибка", "Данный логин уже занят!"); return; }
-        users[u] = getHash(p); localStorage.setItem("oqexx_users", JSON.stringify(users)); uiAlert("Успех", "Аккаунт успешно создан!"); toggleAuthMode();
-    } else {
-        if (u === "oqexx" && p === "admin123") { currentUser = "oqexx"; localStorage.setItem("oqexx_session", "oqexx"); openDashboard(); return; }
-        if (!users.hasOwnProperty(u) || users[u] !== getHash(p)) { uiAlert("Ошибка доступа", "Неверно указан логин или пароль!"); return; }
-        currentUser = u; localStorage.setItem("oqexx_session", u); openDashboard();
+async function processAuth() {
+    const u = document.getElementById("username").value.trim();
+    const p = document.getElementById("password").value.trim();
+
+    if (!u || !p) {
+        uiAlert("Ошибка", "Заполни все поля!");
+        return;
+    }
+
+    const auth = window.fbAuth;
+    const db = window.fbDb;
+    const ref = window.fbRef;
+    const set = window.fbSet;
+    const get = window.fbGet;
+
+    if (!auth) {
+        uiAlert("Ошибка", "Firebase не подключён. Обнови страницу (Ctrl+F5)");
+        return;
+    }
+
+    // Если логин — не email, добавляем домен
+    let email = u.includes("@") ? u.toLowerCase() : (u.toLowerCase() + "@oqexx.local");
+
+    try {
+        if (isRegisterMode) {
+            // ══════ РЕГИСТРАЦИЯ ══════
+            const userCred = await window.fbCreateUser(auth, email, p);
+            const user = userCred.user;
+
+            // Пишем данные юзера в базу
+            await set(ref(db, "users/" + user.uid), {
+                email: email,
+                username: u.toLowerCase(),
+                hwid: "",
+                license_expiry: "",
+                license_key: "",
+                coins: 0,
+                structure: "",
+                banned: false,
+                created_at: Date.now()
+            });
+
+            uiAlert("Успех", "Аккаунт создан! Теперь войди.");
+            toggleAuthMode();
+        } else {
+            // ══════ ВХОД ══════
+            const userCred = await window.fbSignIn(auth, email, p);
+            const user = userCred.user;
+            currentUser = user.uid;
+            window.currentUserId = user.uid;
+
+            // Читаем данные
+            const snap = await get(ref(db, "users/" + user.uid));
+            const data = snap.val();
+
+            if (!data) {
+                uiAlert("Ошибка", "Профиль не найден");
+                return;
+            }
+            if (data.banned) {
+                uiAlert("Заблокирован", "Твой аккаунт заблокирован администратором.");
+                await window.fbSignOut(auth);
+                return;
+            }
+
+            localStorage.setItem("oqexx_session_uid", user.uid);
+            localStorage.setItem("oqexx_session_email", email);
+            openDashboard();
+        }
+    } catch (e) {
+        console.error("Ошибка авторизации:", e);
+        let msg = "Ошибка: " + (e.code || e.message);
+        if (e.code === "auth/email-already-in-use") msg = "Этот логин уже занят!";
+        if (e.code === "auth/wrong-password") msg = "Неверный пароль!";
+        if (e.code === "auth/user-not-found") msg = "Пользователь не найден!";
+        if (e.code === "auth/invalid-credential") msg = "Неверный логин или пароль";
+        if (e.code === "auth/weak-password") msg = "Пароль короткий (минимум 6 символов)";
+        if (e.code === "auth/invalid-email") msg = "Неверный формат логина";
+        uiAlert("Ошибка", msg);
     }
 }
 
@@ -1537,9 +1608,19 @@ function promptActivateCoinCoupon() {
 
 
 
-function logout() { localStorage.removeItem("oqexx_session"); currentUser = ""; document.getElementById("adminPanel").style.display = "none"; document.getElementById("authBlock").style.display = "block"; }
+async function logout() {
+    try {
+        if (window.fbAuth) await window.fbSignOut(window.fbAuth);
+    } catch (e) { console.warn(e); }
+    localStorage.removeItem("oqexx_session");
+    localStorage.removeItem("oqexx_session_uid");
+    localStorage.removeItem("oqexx_session_email");
+    currentUser = "";
+    document.getElementById("adminPanel").style.display = "none";
+    document.getElementById("authBlock").style.display = "block";
+}
 
-function activateKey() {
+async function activateKey() {
     if (localStorage.getItem("oqexx_global_freeze") === "true" && currentUser !== "oqexx") { uiAlert("Ошибка", "Проект заморожен!"); return; }
     let hw = document.getElementById("hwidInput").value.trim().toUpperCase(), pn = document.getElementById("pinInput").value.trim().toUpperCase();
     if (!hw || !pn) { uiAlert("Внимание", "Заполните все текстовые поля ввода!"); return; } hw = hw.replace(/[^A-Z0-9]/g, "");
@@ -1549,6 +1630,22 @@ function activateKey() {
     let ex = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
     let fk = getHash(hw + ex).toUpperCase().padStart(8, '0') + "-" + ex;
     document.getElementById('keyDisplay').innerText = fk; document.getElementById('resultBox').style.display = "block";
+        // ═══ Сохраняем лицензию в Firebase ═══
+    try {
+        const uid = localStorage.getItem("oqexx_session_uid") || currentUser;
+        if (uid && window.fbDb) {
+            await window.fbUpdate(window.fbRef(window.fbDb, "users/" + uid), {
+                license_key: fk,
+                license_expiry: ex,
+                hwid: hw,
+                license_days: days
+            });
+            console.log("✅ Лицензия сохранена в Firebase");
+        }
+    } catch (e) {
+        console.error("Ошибка сохранения лицензии:", e);
+    }
+    
     saveToHistory(fk, days); navigator.clipboard.writeText(fk); uiAlert("Успешно", "Лицензия сгенерирована и добавлена в буфер обмена!");
 }
 
@@ -1910,6 +2007,60 @@ openDashboard = function() {
         </div>
     </div>
 </div>
+
+<!-- ═══════════ FIREBASE SDK ═══════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { getDatabase, ref, set, get, update }
+  from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDa0D3x6_CjFh-6pcwhoy79aqalxylb68",
+  authDomain: "oqexxbinder.firebaseapp.com",
+  databaseURL: "https://oqexxbinder-default-rtdb.firebaseio.com",
+  projectId: "oqexxbinder",
+  storageBucket: "oqexxbinder.firebasestorage.app",
+  messagingSenderId: "488418071295",
+  appId: "1:488418071295:web:b3179f3fb67eac578872ca"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+// Экспорт в глобал — чтобы использовать в других функциях
+window.fbAuth = auth;
+window.fbDb = db;
+window.fbRef = ref;
+window.fbSet = set;
+window.fbGet = get;
+window.fbUpdate = update;
+window.fbCreateUser = createUserWithEmailAndPassword;
+window.fbSignIn = signInWithEmailAndPassword;
+window.fbSignOut = signOut;
+
+console.log("✅ Firebase подключён:", firebaseConfig.projectId);
+
+// Автологин — если юзер уже вошёл, обновляем UI
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log("🔓 Автологин:", user.email);
+    window.currentUserEmail = user.email;
+    window.currentUserId = user.uid;
+    currentUser = user.uid;
+    // Если уже вошёл — открываем панель
+    if (document.getElementById("authBlock")?.style.display !== "none") {
+      try { openDashboard(); } catch(e) { console.warn(e); }
+    }
+  } else {
+    console.log("🔒 Юзер вышел");
+    window.currentUserEmail = null;
+    window.currentUserId = null;
+  }
+});
+</script>
 
 </body>
 </html>
