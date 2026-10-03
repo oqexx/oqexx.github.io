@@ -846,7 +846,7 @@ textarea:focus {
     
     <!-- Кнопки магазина -->
     <div class="shop-buttons" style="display: flex; gap: 8px; width: 100%; justify-content: center; margin-top: 4px;">
-       <button type="button" class="btn-primary" onclick="openTechModal(); event.stopPropagation();" style="font-size: 11px; padding: 7px 12px; flex: 1; max-width: 100px; background: #222634; border: 1px solid #32384e; color: #ffb11b; font-weight: 600; border-radius: 6px; cursor: pointer;">Фон (100 🪙)</button>
+      <button type="button" class="btn-primary" onclick="openBackgroundPicker(); event.stopPropagation();" style="font-size: 11px; padding: 7px 12px; flex: 1; max-width: 100px; background: #222634; border: 1px solid #32384e; color: #ffb11b; font-weight: 600; border-radius: 6px; cursor: pointer;">Фон (100 🪙)</button>
         <button type="button" class="btn-primary" onclick="promptBuyDescription(); event.stopPropagation();" style="font-size: 11px; padding: 7px 12px; flex: 1; max-width: 100px; background: #222634; border: 1px solid #32384e; color: #58a6ff; font-weight: 600; border-radius: 6px; cursor: pointer;">Статус (50 🪙)</button>
     </div>
 </div>
@@ -1534,6 +1534,10 @@ function openDashboard() {
     let savedAvatar = localStorage.getItem("oqexx_avatar_" + currentUser);
     if (savedAvatar) {
         document.getElementById("avatarDisplay").src = savedAvatar;
+            // Применяем сохранённый фон
+    let savedBg = localStorage.getItem("oqexx_bg_" + currentUser) || "default";
+    applyBackgroundToProfile(savedBg);
+   
     }
     
     // ═══ ПРОВЕРКА РОЛИ ИЗ FIREBASE ═══
@@ -2014,6 +2018,175 @@ openDashboard = function() {
         status.innerText = steps[i].t;
     }, 420);
 };
+
+// ═══════════════════════════════════════════════
+//  ВЫБОР ФОНА ПРОФИЛЯ
+// ═══════════════════════════════════════════════
+
+const BACKGROUNDS = [
+    {
+        id: "default",
+        name: "Стандартный",
+        url: "",
+        cost: 0,
+        desc: "Обычный тёмный фон"
+    },
+    {
+        id: "city1",
+        name: "Ночной город",
+        url: "https://oqexx.github.io/bg-city1.jpg",
+        cost: 100,
+        desc: "Фиолетовый город под закатом"
+    },
+    {
+        id: "city2",
+        name: "Закат в LA",
+        url: "https://oqexx.github.io/bg-city2.jpg",
+        cost: 100,
+        desc: "Тёплый закат над городом"
+    }
+];
+
+async function openBackgroundPicker() {
+    // Убираем старый оверлей если есть
+    let old = document.getElementById("bgPickerOverlay");
+    if (old) old.remove();
+    
+    // Собираем текущий выбранный фон
+    let currentBg = localStorage.getItem("oqexx_bg_" + currentUser) || "default";
+    
+    // Создаём оверлей
+    let overlay = document.createElement("div");
+    overlay.id = "bgPickerOverlay";
+    overlay.className = "custom-prompt-overlay";
+    overlay.style.display = "flex";
+    overlay.style.opacity = "1";
+    overlay.style.zIndex = "999999";
+    
+    // Убираем transform у mainBlock чтобы оверлей шёл на весь экран
+    let mb = document.getElementById("mainBlock");
+    if (mb) {
+        mb.style.animation = "none";
+        mb.style.transform = "none";
+        mb.style.filter = "none";
+    }
+    
+    let balance = getCoins();
+    
+    let cardsHtml = BACKGROUNDS.map(bg => {
+        let isOwned = bg.cost === 0 || localStorage.getItem("oqexx_bg_owned_" + bg.id + "_" + currentUser) === "1";
+        let isActive = currentBg === bg.id;
+        
+        let badge = isActive
+            ? `<div style="position: absolute; top: 10px; right: 10px; background: #00ff66; color: #000; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px;">✓ ВЫБРАН</div>`
+            : (isOwned
+                ? `<div style="position: absolute; top: 10px; right: 10px; background: rgba(0,255,102,0.15); color: #00ff66; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(0,255,102,0.3);">КУПЛЕНО</div>`
+                : `<div style="position: absolute; top: 10px; right: 10px; background: rgba(255,177,27,0.15); color: #ffb11b; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,177,27,0.3);">${bg.cost} 🪙</div>`);
+        
+        let previewStyle = bg.url
+            ? `background-image: url('${bg.url}'); background-size: cover; background-position: center;`
+            : `background: linear-gradient(135deg, #1a1d29 0%, #0a0c14 100%);`;
+        
+        let actionBtn;
+        if (isActive) {
+            actionBtn = `<button disabled style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,255,102,0.3); background: rgba(0,255,102,0.1); color: #00ff66; font-weight: 700; font-size: 13px; cursor: default;">Активен</button>`;
+        } else if (isOwned) {
+            actionBtn = `<button onclick="applyBackground('${bg.id}')" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #5158E2; background: #5158E2; color: #fff; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#6B5EE2'" onmouseout="this.style.background='#5158E2'">Применить</button>`;
+        } else {
+            actionBtn = `<button onclick="buyBackground('${bg.id}', ${bg.cost})" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ffb11b; background: rgba(255,177,27,0.1); color: #ffb11b; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#ffb11b'; this.style.color='#000'" onmouseout="this.style.background='rgba(255,177,27,0.1)'; this.style.color='#ffb11b'">Купить за ${bg.cost} 🪙</button>`;
+        }
+        
+        return `
+            <div style="position: relative; background: #0d0f18; border: 1px solid #1e2230; border-radius: 12px; overflow: hidden; ${isActive ? 'border-color: #00ff66; box-shadow: 0 0 20px rgba(0,255,102,0.2);' : ''}">
+                ${badge}
+                <div style="height: 130px; ${previewStyle}"></div>
+                <div style="padding: 14px;">
+                    <div style="color: #fff; font-weight: 700; font-size: 14px; margin-bottom: 4px;">${bg.name}</div>
+                    <div style="color: #8a92a6; font-size: 11px; margin-bottom: 12px;">${bg.desc}</div>
+                    ${actionBtn}
+                </div>
+            </div>
+        `;
+    }).join("");
+    
+    overlay.innerHTML = `
+        <div class="custom-prompt-box" style="max-width: 720px; width: 92%; padding: 28px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <h3 class="custom-prompt-title" style="font-size: 20px; margin: 0;">🎨 Магазин фонов профиля</h3>
+                <div style="background: rgba(255,177,27,0.1); border: 1px solid rgba(255,177,27,0.3); color: #ffb11b; font-size: 13px; font-weight: 700; padding: 6px 14px; border-radius: 20px;">
+                    Баланс: ${balance} 🪙
+                </div>
+            </div>
+            <p class="custom-prompt-text" style="margin-bottom: 18px;">
+                Выбери фон, который будет показываться за твоим профилем. Каждый фон покупается один раз.
+            </p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                ${cardsHtml}
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="custom-prompt-btn secondary" style="padding: 10px 22px;" onclick="closeBackgroundPicker()">Закрыть</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+}
+
+function closeBackgroundPicker() {
+    let o = document.getElementById("bgPickerOverlay");
+    if (o) o.remove();
+}
+
+async function buyBackground(bgId, cost) {
+    let balance = getCoins();
+    if (balance < cost) {
+        uiAlert("Недостаточно коинов", `Нужно ${cost} 🪙, у тебя только ${balance} 🪙. Активируй купоны!`);
+        return;
+    }
+    
+    // Списываем
+    localStorage.setItem("oqexx_coins_" + currentUser, balance - cost);
+    // Помечаем как купленный
+    localStorage.setItem("oqexx_bg_owned_" + bgId + "_" + currentUser, "1");
+    // Сразу применяем
+    localStorage.setItem("oqexx_bg_" + currentUser, bgId);
+    
+    updateCoinsUI();
+    applyBackgroundToProfile(bgId);
+    
+    // Перезагружаем окно чтобы обновить статусы
+    closeBackgroundPicker();
+    await uiAlert("Фон куплен!", `Фон «${bgId}» успешно куплен и применён.`);
+    openBackgroundPicker();
+}
+
+function applyBackground(bgId) {
+    localStorage.setItem("oqexx_bg_" + currentUser, bgId);
+    applyBackgroundToProfile(bgId);
+    closeBackgroundPicker();
+    uiAlert("Фон применён", "Твой профиль теперь с новым фоном!");
+}
+
+function applyBackgroundToProfile(bgId) {
+    let profileCard = document.querySelector(".profile-container");
+    if (!profileCard) return;
+    
+    if (!bgId || bgId === "default") {
+        profileCard.style.backgroundImage = "";
+        profileCard.style.background = "#15171e";
+        return;
+    }
+    
+    let bg = BACKGROUNDS.find(b => b.id === bgId);
+    if (!bg || !bg.url) return;
+    
+    profileCard.style.background = "";
+    profileCard.style.backgroundImage = `linear-gradient(180deg, rgba(10,12,20,0.75) 0%, rgba(10,12,20,0.9) 100%), url('${bg.url}')`;
+    profileCard.style.backgroundSize = "cover";
+    profileCard.style.backgroundPosition = "center";
+}
 
 </script>
 
