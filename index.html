@@ -1541,10 +1541,14 @@ function customPrompt(title, text, callback) {
 
 function openAvatarViewModel() {
     let savedAvatar = localStorage.getItem("oqexx_avatar_" + currentUser);
+    
+    // Если авы нет — сразу открываем выбор файла (без ошибки)
     if (!savedAvatar) {
-        uiAlert("Информация", "У вас не установлена кастомная аватарка.");
+        document.getElementById("avatarInput").click();
         return;
     }
+    
+    // Если ава есть — открываем модалку просмотра
     document.getElementById("modalAvatarImg").src = savedAvatar;
     openModalOverlay("avatarViewModal");
 }
