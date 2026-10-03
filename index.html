@@ -1438,28 +1438,43 @@ function openDashboard() {
     let savedAvatar = localStorage.getItem("oqexx_avatar_" + currentUser);
     if (savedAvatar) {
         document.getElementById("avatarDisplay").src = savedAvatar;
-    } else {
-        document.getElementById("avatarDisplay").src = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 24 24' fill='%237e8799'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>";
     }
     
-    let ap = document.getElementById("adminControls");
-    if (currentUser === "oqexx") { 
-        if (ap) ap.style.display = "block"; 
-        if (typeof updateAdminButtonUI === "function") updateAdminButtonUI(); 
-    } else { 
-        if (ap) ap.style.display = "none"; 
-    }
-    
-    let roleEl = document.getElementById("statRole");
-    if (roleEl) roleEl.innerText = currentUser === "oqexx" ? "Owner" : "Beta";
+    // ═══ ПРОВЕРКА РОЛИ ИЗ FIREBASE ═══
+    (async () => {
+        try {
+            const uid = localStorage.getItem("oqexx_session_uid") || currentUser;
+            if (!uid || !window.fbDb) return;
+            
+            const snap = await window.fbGet(window.fbRef(window.fbDb, "users/" + uid));
+            const data = snap.val() || {};
+            
+            const isAdmin = (data.role === "admin") || (data.username === "oqexx");
+            
+            // Админ-контролы
+            let ap = document.getElementById("adminControls");
+            if (ap) {
+                ap.style.display = isAdmin ? "block" : "none";
+                if (isAdmin && typeof updateAdminButtonUI === "function") updateAdminButtonUI();
+            }
+            
+            // Роль в статистике
+            let roleEl = document.getElementById("statRole");
+            if (roleEl) roleEl.innerText = isAdmin ? "Owner" : "Beta";
+            
+            // Репорты: админ видит тикеты, обычный — форму
+            if (typeof updateReportsUI === "function") updateReportsUI();
+            
+            console.log("👤 Роль:", data.role || "user");
+        } catch (e) {
+            console.warn("Не удалось получить роль:", e);
+        }
+    })();
     
     if (typeof applyGlobalFreezeUI === "function") applyGlobalFreezeUI();
     if (typeof renderHistory === "function") renderHistory();
-
     updateCoinsUI();
     applyCustomization();
-    updateReportsUI();
-
 }
 
 
