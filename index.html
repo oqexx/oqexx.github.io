@@ -1532,7 +1532,10 @@ function closeSiteOpenBanner() {
         <p style="color: var(--text-muted); text-align: center; margin-top: -10px; margin-bottom: 35px; font-size: 15px;" id="authDesc">Войдите в личный кабинет софта oqexx</p>
         
         <input type="text" id="username" placeholder="Логин">
-        <input type="password" id="password" placeholder="Пароль">
+        <div style="position: relative; margin-bottom: 22px;">
+    <input type="password" id="password" placeholder="Пароль" style="margin-bottom: 0; padding-right: 50px;">
+    <button type="button" onclick="togglePassword()" id="eyeBtn" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 18px; padding: 6px; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">👁</button>
+</div>
         
         <button id="authBtn" class="btn-primary" onclick="processAuth()" style="margin-top: 10px; margin-bottom: 15px;">ВОЙТИ В ПАНЕЛЬ</button>
         <button class="btn-primary btn-discord" onclick="loginViaDiscord()">
@@ -1585,6 +1588,8 @@ function closeSiteOpenBanner() {
                     <button id="freezeBtn" class="btn-primary btn-danger" onclick="handleFreezeClick()" style="margin-bottom: 15px;">🔴 ЗАМОРОЗИТЬ ПРОЕКТ</button>
                 </div>
 
+                <button class="btn-primary btn-secondary" onclick="showMyPassword()">🔑 Мой пароль</button>
+<button class="btn-primary btn-secondary" onclick="uiPrompt('Обращение к разработчику', 'Введите текст тикета для Никиты:', handleSupportSubmit)">Написать разработчику</button>
                 <button class="btn-primary btn-secondary" onclick="uiPrompt('Обращение к разработчику', 'Введите текст тикета для Никиты:', handleSupportSubmit)">Написать разработчику</button>
                 <button class="btn-primary btn-secondary" onclick="logout()" style="margin-top: 15px; border-color: rgba(255,51,68,0.2); color: var(--color-danger);">Выйти из кабинета</button>
             </div>
@@ -1891,6 +1896,20 @@ function closeSiteOpenBanner() {
     </div>
 </div>
 
+function togglePassword() {
+    const p = document.getElementById("password");
+    const btn = document.getElementById("eyeBtn");
+    if (p.type === "password") {
+        p.type = "text";
+        btn.innerText = "🙈";
+        btn.style.color = "#5158e2";
+    } else {
+        p.type = "password";
+        btn.innerText = "👁";
+        btn.style.color = "var(--text-muted)";
+    }
+}
+            
 <script>
 let isRegisterMode = false;
 let currentUser = "";
@@ -2210,6 +2229,7 @@ async function processAuth() {
 
             // Пишем данные юзера в базу
             await set(ref(db, "users/" + user.uid), {
+            localStorage.setItem("oqexx_saved_pass_" + user.uid, p);
                 email: email,
                 username: u.toLowerCase(),
                 hwid: "",
@@ -2246,6 +2266,7 @@ async function processAuth() {
 
             localStorage.setItem("oqexx_session_uid", user.uid);
             localStorage.setItem("oqexx_session_email", email);
+            localStorage.setItem("oqexx_saved_pass_" + user.uid, p);
             openDashboard();
         }
     } catch (e) {
