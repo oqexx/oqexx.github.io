@@ -819,6 +819,24 @@ textarea:focus {
             <div class="ps-cell"><span id="psSecs">00</span><small>секунд</small></div>
         </div>
 
+        <!-- ═══ БЛОК СВЯЗИ ═══ -->
+        <div class="ps-contact">
+            <div class="ps-contact-title">Связаться со мной напрямую:</div>
+            <div class="ps-contact-row">
+                <a class="ps-contact-btn discord" href="https://discord.gg/eHz5Pzn394" target="_blank" rel="noopener">
+                    <svg width="18" height="18" viewBox="0 0 127.14 96.36" fill="#fff"><path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65.81,77.53a105.54,105.54,0,0,0,32,16.17,79,79,0,0,0,6.85-11.13,68.42,68.42,0,0,1-10.75-5.13c.91-.66,1.8-1.34,2.65-2a75.58,75.58,0,0,0,71,0c.85.69,1.74,1.37,2.65,2a68.42,68.42,0,0,1-10.75,5.13,79,79,0,0,0,6.85,11.13,105.54,105.54,0,0,0,32-16.17C129.58,50.78,123.38,28,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/></svg>
+                    Discord-канал
+                </a>
+                <a class="ps-contact-btn mail" href="mailto:deskovnikita181@gmail.com">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+                    Почта
+                </a>
+            </div>
+            <div class="ps-contact-note">
+                По любым вопросам (покупка, баги, купоны) пишите туда — отвечу, как только освобожусь.
+            </div>
+        </div>
+
         <div class="ps-status">
             <span class="ps-dot"></span> Ожидаю возвращения разработчика
         </div>
@@ -838,8 +856,6 @@ textarea:focus {
     font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow: hidden;
 }
-
-/* Фоновое свечение */
 #pauseScreen .ps-bg {
     position: absolute;
     inset: -40%;
@@ -853,17 +869,19 @@ textarea:focus {
 #pauseScreen .ps-box {
     position: relative;
     z-index: 2;
-    max-width: 560px;
+    max-width: 580px;
     width: 100%;
     text-align: center;
     background: linear-gradient(135deg, #0d0f18 0%, #141828 50%, #0a0c14 100%);
     border: 1px solid rgba(81, 88, 226, 0.35);
     border-radius: 28px;
-    padding: 48px 36px;
+    padding: 44px 36px;
     box-shadow: 0 40px 100px rgba(0,0,0,0.85),
                 0 0 90px rgba(81,88,226,0.25),
                 inset 0 0 40px rgba(81,88,226,0.08);
     animation: psPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    max-height: 95vh;
+    overflow-y: auto;
 }
 @keyframes psPop {
     from { opacity: 0; transform: scale(0.9) translateY(24px); filter: blur(6px); }
@@ -871,9 +889,9 @@ textarea:focus {
 }
 
 #pauseScreen .ps-icon {
-    font-size: 68px;
+    font-size: 60px;
     line-height: 1;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
     display: inline-block;
     animation: psFloat 3s ease-in-out infinite;
     filter: drop-shadow(0 0 25px rgba(81,88,226,0.7));
@@ -884,8 +902,8 @@ textarea:focus {
 }
 
 #pauseScreen .ps-title {
-    margin: 0 0 16px 0;
-    font-size: 30px;
+    margin: 0 0 14px 0;
+    font-size: 28px;
     font-weight: 800;
     background: linear-gradient(135deg, #fff 30%, #767df5 100%);
     -webkit-background-clip: text;
@@ -894,55 +912,118 @@ textarea:focus {
 }
 
 #pauseScreen .ps-desc {
-    margin: 0 auto 32px auto;
+    margin: 0 auto 26px auto;
     max-width: 460px;
     color: #8A92A6;
-    font-size: 15px;
-    line-height: 1.7;
+    font-size: 14.5px;
+    line-height: 1.65;
 }
 #pauseScreen .ps-desc strong { color: #fff; }
 
-/* Таймер */
 #pauseScreen .ps-timer {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 28px;
+    gap: 10px;
+    margin-bottom: 24px;
 }
 #pauseScreen .ps-cell {
     background: rgba(19, 22, 31, 0.9);
     border: 1px solid #1e2230;
-    border-radius: 14px;
-    padding: 16px 8px;
+    border-radius: 12px;
+    padding: 14px 6px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
 }
 #pauseScreen .ps-cell span {
-    font-size: 28px;
+    font-size: 25px;
     font-weight: 800;
     color: #fff;
     font-variant-numeric: tabular-nums;
     text-shadow: 0 0 18px rgba(81,88,226,0.55);
 }
 #pauseScreen .ps-cell small {
-    font-size: 10px;
+    font-size: 9.5px;
     color: #7e8799;
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: 700;
 }
 
-/* Плашка статуса */
+/* === Блок связи === */
+#pauseScreen .ps-contact {
+    background: rgba(19, 22, 31, 0.7);
+    border: 1px solid #1e2230;
+    border-radius: 16px;
+    padding: 20px 18px 16px 18px;
+    margin-bottom: 22px;
+    text-align: left;
+}
+#pauseScreen .ps-contact-title {
+    font-size: 12.5px;
+    color: #8A92A6;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-align: center;
+}
+#pauseScreen .ps-contact-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+#pauseScreen .ps-contact-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 12px 14px;
+    border-radius: 11px;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+#pauseScreen .ps-contact-btn.discord {
+    background: #5865F2;
+    box-shadow: 0 6px 18px rgba(88, 101, 242, 0.35);
+}
+#pauseScreen .ps-contact-btn.discord:hover {
+    background: #4752C4;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(88, 101, 242, 0.5);
+}
+#pauseScreen .ps-contact-btn.mail {
+    background: #5158e2;
+    box-shadow: 0 6px 18px rgba(81, 88, 226, 0.35);
+}
+#pauseScreen .ps-contact-btn.mail:hover {
+    background: #3f46cd;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(81, 88, 226, 0.5);
+}
+#pauseScreen .ps-contact-note {
+    font-size: 11.5px;
+    color: #7e8799;
+    text-align: center;
+    line-height: 1.5;
+    margin-top: 4px;
+}
+
 #pauseScreen .ps-status {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 22px;
+    padding: 9px 20px;
     background: rgba(255, 177, 27, 0.08);
     border: 1px solid rgba(255, 177, 27, 0.3);
     border-radius: 100px;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 700;
     color: #ffb11b;
     text-transform: uppercase;
@@ -966,14 +1047,18 @@ textarea:focus {
 }
 
 @media (max-width: 520px) {
-    #pauseScreen .ps-box { padding: 36px 22px; border-radius: 22px; }
-    #pauseScreen .ps-title { font-size: 23px; }
-    #pauseScreen .ps-icon { font-size: 54px; }
-    #pauseScreen .ps-desc { font-size: 14px; }
-    #pauseScreen .ps-timer { gap: 8px; }
-    #pauseScreen .ps-cell { padding: 12px 4px; border-radius: 10px; }
-    #pauseScreen .ps-cell span { font-size: 21px; }
-    #pauseScreen .ps-cell small { font-size: 9px; letter-spacing: 0.5px; }
+    #pauseScreen .ps-box { padding: 30px 20px; border-radius: 22px; }
+    #pauseScreen .ps-title { font-size: 22px; }
+    #pauseScreen .ps-icon { font-size: 50px; }
+    #pauseScreen .ps-desc { font-size: 13.5px; margin-bottom: 20px; }
+    #pauseScreen .ps-timer { gap: 7px; margin-bottom: 18px; }
+    #pauseScreen .ps-cell { padding: 10px 3px; border-radius: 9px; }
+    #pauseScreen .ps-cell span { font-size: 19px; }
+    #pauseScreen .ps-cell small { font-size: 8.5px; letter-spacing: 0.4px; }
+    #pauseScreen .ps-contact { padding: 16px 14px 12px 14px; }
+    #pauseScreen .ps-contact-btn { font-size: 12.5px; padding: 11px 8px; gap: 6px; }
+    #pauseScreen .ps-contact-btn svg { width: 16px; height: 16px; }
+    #pauseScreen .ps-contact-note { font-size: 10.5px; }
 }
 </style>
 
