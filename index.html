@@ -799,328 +799,163 @@ textarea:focus {
     </style>
 </head>
 
-<!-- ═══════════ ЗАГЛУШКА "САЙТ НА ПАУЗЕ" ═══════════ -->
-<div id="pauseScreen">
-    <div class="ps-bg"></div>
-    <div class="ps-box">
-        <div class="ps-icon">🔧</div>
-        <h1 class="ps-title">Сайт временно на паузе</h1>
-        <p class="ps-desc">
-            Привет! На связи Никита 👋<br>
-            Сейчас я занят по личным делам и не могу следить за проектом и обновлять сайт.
-            Вернусь через <strong>3 дня</strong> — всё снова заработает, обновления и купоны тоже.
-            Спасибо за понимание и что вы с нами ❤️
-        </p>
 
-        <div class="ps-timer">
-            <div class="ps-cell"><span id="psDays">0</span><small>дней</small></div>
-            <div class="ps-cell"><span id="psHours">00</span><small>часов</small></div>
-            <div class="ps-cell"><span id="psMins">00</span><small>минут</small></div>
-            <div class="ps-cell"><span id="psSecs">00</span><small>секунд</small></div>
-        </div>
+    
+    <body>
 
-        <!-- ═══ БЛОК СВЯЗИ ═══ -->
-        <div class="ps-contact">
-            <div class="ps-contact-title">Связаться со мной напрямую:</div>
-            <div class="ps-contact-row">
-                <a class="ps-contact-btn discord" href="https://discord.gg/eHz5Pzn394" target="_blank" rel="noopener">
-                    <svg width="18" height="18" viewBox="0 0 127.14 96.36" fill="#fff"><path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65.81,77.53a105.54,105.54,0,0,0,32,16.17,79,79,0,0,0,6.85-11.13,68.42,68.42,0,0,1-10.75-5.13c.91-.66,1.8-1.34,2.65-2a75.58,75.58,0,0,0,71,0c.85.69,1.74,1.37,2.65,2a68.42,68.42,0,0,1-10.75,5.13,79,79,0,0,0,6.85,11.13,105.54,105.54,0,0,0,32-16.17C129.58,50.78,123.38,28,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/></svg>
-                    Discord-канал
-                </a>
-                <a class="ps-contact-btn mail" href="mailto:deskovnikita181@gmail.com">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
-                    Почта
-                </a>
-            </div>
-            <div class="ps-contact-note">
-                По любым вопросам (покупка, баги, купоны) пишите туда — отвечу, как только освобожусь.
-            </div>
-        </div>
-
-        <div class="ps-status">
-            <span class="ps-dot"></span> Ожидаю возвращения разработчика
-        </div>
+   <!-- ═══════════ УВЕДОМЛЕНИЕ "САЙТ ОТКРЫТ" ═══════════ -->
+<div id="siteOpenBanner">
+    <div class="sob-icon">✅</div>
+    <div class="sob-text">
+        <strong>Сайт снова работает!</strong>
+        <span>Тех. работы завершены, обновления и купоны доступны. Спасибо, что дождались ❤️</span>
     </div>
+    <button class="sob-close" onclick="closeSiteOpenBanner()" title="Закрыть">✕</button>
 </div>
 
 <style>
-#pauseScreen {
+#siteOpenBanner {
     position: fixed;
-    inset: 0;
-    z-index: 999999999;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999999;
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: #060709;
+    gap: 14px;
+    padding: 14px 22px;
+    background: linear-gradient(135deg, #0d1117 0%, #14251c 50%, #0a1410 100%);
+    border-bottom: 1px solid rgba(0, 255, 102, 0.35);
+    box-shadow: 0 8px 30px rgba(0, 255, 102, 0.12),
+                0 2px 0 rgba(0, 255, 102, 0.15) inset;
     font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    overflow: hidden;
+    transform: translateY(-100%);
+    animation: sobSlideDown 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
 }
-#pauseScreen .ps-bg {
-    position: absolute;
-    inset: -40%;
-    background: radial-gradient(circle at 30% 30%, rgba(81,88,226,0.30), transparent 45%),
-                radial-gradient(circle at 70% 70%, rgba(166,81,226,0.22), transparent 45%);
-    animation: psBgSpin 22s linear infinite;
-    pointer-events: none;
-}
-@keyframes psBgSpin { to { transform: rotate(360deg); } }
-
-#pauseScreen .ps-box {
-    position: relative;
-    z-index: 2;
-    max-width: 580px;
-    width: 100%;
-    text-align: center;
-    background: linear-gradient(135deg, #0d0f18 0%, #141828 50%, #0a0c14 100%);
-    border: 1px solid rgba(81, 88, 226, 0.35);
-    border-radius: 28px;
-    padding: 44px 36px;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.85),
-                0 0 90px rgba(81,88,226,0.25),
-                inset 0 0 40px rgba(81,88,226,0.08);
-    animation: psPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-    max-height: 95vh;
-    overflow-y: auto;
-}
-@keyframes psPop {
-    from { opacity: 0; transform: scale(0.9) translateY(24px); filter: blur(6px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+@keyframes sobSlideDown {
+    to { transform: translateY(0); }
 }
 
-#pauseScreen .ps-icon {
-    font-size: 60px;
+#siteOpenBanner .sob-icon {
+    font-size: 24px;
     line-height: 1;
-    margin-bottom: 16px;
-    display: inline-block;
-    animation: psFloat 3s ease-in-out infinite;
-    filter: drop-shadow(0 0 25px rgba(81,88,226,0.7));
+    flex-shrink: 0;
+    animation: sobPulse 1.8s ease-in-out infinite;
+    filter: drop-shadow(0 0 12px rgba(0, 255, 102, 0.7));
 }
-@keyframes psFloat {
-    0%, 100% { transform: translateY(0) rotate(-8deg); }
-    50%      { transform: translateY(-12px) rotate(8deg); }
-}
-
-#pauseScreen .ps-title {
-    margin: 0 0 14px 0;
-    font-size: 28px;
-    font-weight: 800;
-    background: linear-gradient(135deg, #fff 30%, #767df5 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+@keyframes sobPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.18); }
 }
 
-#pauseScreen .ps-desc {
-    margin: 0 auto 26px auto;
-    max-width: 460px;
-    color: #8A92A6;
-    font-size: 14.5px;
-    line-height: 1.65;
-}
-#pauseScreen .ps-desc strong { color: #fff; }
-
-#pauseScreen .ps-timer {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 24px;
-}
-#pauseScreen .ps-cell {
-    background: rgba(19, 22, 31, 0.9);
-    border: 1px solid #1e2230;
-    border-radius: 12px;
-    padding: 14px 6px;
+#siteOpenBanner .sob-text {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
+    min-width: 0;
 }
-#pauseScreen .ps-cell span {
-    font-size: 25px;
+#siteOpenBanner .sob-text strong {
+    color: #00ff66;
+    font-size: 14px;
     font-weight: 800;
-    color: #fff;
-    font-variant-numeric: tabular-nums;
-    text-shadow: 0 0 18px rgba(81,88,226,0.55);
+    letter-spacing: 0.3px;
+    text-shadow: 0 0 14px rgba(0, 255, 102, 0.5);
 }
-#pauseScreen .ps-cell small {
-    font-size: 9.5px;
-    color: #7e8799;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 700;
+#siteOpenBanner .sob-text span {
+    color: #b8c0cf;
+    font-size: 12.5px;
+    line-height: 1.4;
 }
 
-/* === Блок связи === */
-#pauseScreen .ps-contact {
-    background: rgba(19, 22, 31, 0.7);
-    border: 1px solid #1e2230;
-    border-radius: 16px;
-    padding: 20px 18px 16px 18px;
-    margin-bottom: 22px;
-    text-align: left;
-}
-#pauseScreen .ps-contact-title {
-    font-size: 12.5px;
+#siteOpenBanner .sob-close {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
     color: #8A92A6;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    text-align: center;
-}
-#pauseScreen .ps-contact-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-#pauseScreen .ps-contact-btn {
-    display: inline-flex;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 9px;
-    padding: 12px 14px;
-    border-radius: 11px;
-    font-size: 13.5px;
-    font-weight: 700;
-    text-decoration: none;
-    color: #fff;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    border: 1px solid transparent;
-    cursor: pointer;
+    font-family: inherit;
 }
-#pauseScreen .ps-contact-btn.discord {
-    background: #5865F2;
-    box-shadow: 0 6px 18px rgba(88, 101, 242, 0.35);
-}
-#pauseScreen .ps-contact-btn.discord:hover {
-    background: #4752C4;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 26px rgba(88, 101, 242, 0.5);
-}
-#pauseScreen .ps-contact-btn.mail {
-    background: #5158e2;
-    box-shadow: 0 6px 18px rgba(81, 88, 226, 0.35);
-}
-#pauseScreen .ps-contact-btn.mail:hover {
-    background: #3f46cd;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 26px rgba(81, 88, 226, 0.5);
-}
-#pauseScreen .ps-contact-note {
-    font-size: 11.5px;
-    color: #7e8799;
-    text-align: center;
-    line-height: 1.5;
-    margin-top: 4px;
+#siteOpenBanner .sob-close:hover {
+    background: rgba(255, 51, 68, 0.15);
+    border-color: rgba(255, 51, 68, 0.4);
+    color: #ff3344;
+    transform: rotate(90deg);
 }
 
-#pauseScreen .ps-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 20px;
-    background: rgba(255, 177, 27, 0.08);
-    border: 1px solid rgba(255, 177, 27, 0.3);
-    border-radius: 100px;
-    font-size: 11.5px;
-    font-weight: 700;
-    color: #ffb11b;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    animation: psStatusPulse 2s ease-in-out infinite;
+/* Полоска снизу — переливается */
+#siteOpenBanner::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, #00ff66, #5158e2, #00ff66, transparent);
+    background-size: 200% auto;
+    animation: sobShimmer 3s linear infinite;
 }
-@keyframes psStatusPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(255,177,27,0.4); }
-    50%      { box-shadow: 0 0 0 9px rgba(255,177,27,0); }
-}
-#pauseScreen .ps-dot {
-    width: 8px; height: 8px;
-    background: #ffb11b;
-    border-radius: 50%;
-    box-shadow: 0 0 10px #ffb11b;
-    animation: psDotBlink 1.2s ease-in-out infinite;
-}
-@keyframes psDotBlink {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50%      { opacity: 0.4; transform: scale(0.75); }
+@keyframes sobShimmer {
+    from { background-position: 0% center; }
+    to   { background-position: 200% center; }
 }
 
-@media (max-width: 520px) {
-    #pauseScreen .ps-box { padding: 30px 20px; border-radius: 22px; }
-    #pauseScreen .ps-title { font-size: 22px; }
-    #pauseScreen .ps-icon { font-size: 50px; }
-    #pauseScreen .ps-desc { font-size: 13.5px; margin-bottom: 20px; }
-    #pauseScreen .ps-timer { gap: 7px; margin-bottom: 18px; }
-    #pauseScreen .ps-cell { padding: 10px 3px; border-radius: 9px; }
-    #pauseScreen .ps-cell span { font-size: 19px; }
-    #pauseScreen .ps-cell small { font-size: 8.5px; letter-spacing: 0.4px; }
-    #pauseScreen .ps-contact { padding: 16px 14px 12px 14px; }
-    #pauseScreen .ps-contact-btn { font-size: 12.5px; padding: 11px 8px; gap: 6px; }
-    #pauseScreen .ps-contact-btn svg { width: 16px; height: 16px; }
-    #pauseScreen .ps-contact-note { font-size: 10.5px; }
+@media (max-width: 600px) {
+    #siteOpenBanner { padding: 11px 14px; gap: 10px; }
+    #siteOpenBanner .sob-icon { font-size: 20px; }
+    #siteOpenBanner .sob-text strong { font-size: 12.5px; }
+    #siteOpenBanner .sob-text span { font-size: 11px; }
+    #siteOpenBanner .sob-close { width: 26px; height: 26px; font-size: 12px; }
 }
 </style>
 
 <script>
 (function () {
-    // Сколько времени показывать заглушку (в днях от текущего момента)
-    const DAYS = 3;
+    const KEY = "oqexx_siteopen_banner_closed";
 
-    // Фиксированная точка отсчёта — привязывается к первому открытию,
-    // чтобы таймер не сбрасывался при каждом обновлении страницы
-    const START_KEY = "oqexx_pause_start";
-
-    let startTime = localStorage.getItem(START_KEY);
-    if (!startTime) {
-        startTime = Date.now();
-        localStorage.setItem(START_KEY, startTime);
-    } else {
-        startTime = parseInt(startTime);
+    // Если уже закрывали — не показываем и сдвигаем контент наверх
+    if (localStorage.getItem(KEY) === "1") {
+        const b = document.getElementById("siteOpenBanner");
+        if (b) b.remove();
+        return;
     }
 
-    const endTime = startTime + DAYS * 24 * 60 * 60 * 1000;
-
-    const screen = document.getElementById("pauseScreen");
-    if (!screen) return;
-
-    function tick() {
-        const left = endTime - Date.now();
-
-        if (left <= 0) {
-            screen.style.transition = "opacity 0.8s ease, transform 0.8s ease";
-            screen.style.opacity = "0";
-            screen.style.transform = "scale(1.05)";
-            setTimeout(function () {
-                screen.remove();
-                localStorage.removeItem(START_KEY);
-                document.body.style.overflow = "";
-            }, 800);
-            clearInterval(timerId);
-            return;
-        }
-
-        const d = Math.floor(left / 86400000);
-        const h = Math.floor((left % 86400000) / 3600000);
-        const m = Math.floor((left % 3600000) / 60000);
-        const s = Math.floor((left % 60000) / 1000);
-
-        document.getElementById("psDays").innerText  = d;
-        document.getElementById("psHours").innerText = String(h).padStart(2, "0");
-        document.getElementById("psMins").innerText  = String(m).padStart(2, "0");
-        document.getElementById("psSecs").innerText  = String(s).padStart(2, "0");
+    // Сдвигаем основной блок вниз, чтобы плашка его не перекрывала
+    function adjustPadding() {
+        const banner = document.getElementById("siteOpenBanner");
+        if (!banner) return;
+        const h = banner.offsetHeight;
+        document.body.style.paddingTop = h + "px";
     }
-
-    document.body.style.overflow = "hidden";
-
-    tick();
-    const timerId = setInterval(tick, 1000);
+    window.addEventListener("resize", adjustPadding);
+    setTimeout(adjustPadding, 100);
+    setTimeout(adjustPadding, 900);
 })();
+
+function closeSiteOpenBanner() {
+    const b = document.getElementById("siteOpenBanner");
+    if (!b) return;
+    b.style.transition = "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease";
+    b.style.transform = "translateY(-100%)";
+    b.style.opacity = "0";
+    setTimeout(function () {
+        b.remove();
+        document.body.style.paddingTop = "";
+    }, 500);
+    localStorage.setItem("oqexx_siteopen_banner_closed", "1");
+}
 </script>
-<!-- ═══════════ КОНЕЦ ЗАГЛУШКИ ═══════════ -->    
-    
-    <body>
-<div id="mainBlock">
+<!-- ═══════════ КОНЕЦ УВЕДОМЛЕНИЯ ═══════════ -->     
+        
+        <div id="mainBlock">
     <!-- ОКНО АВТОРИЗАЦИИ -->
     <div id="authBlock" style="max-width: 440px; margin: 40px auto; padding: 10px 0;">
         <h2 style="text-align: center; font-size: 32px;" id="authTitle">Авторизация</h2>
@@ -1489,7 +1324,7 @@ textarea:focus {
 <script>
 let isRegisterMode = false;
 let currentUser = "";
-let couponsVersion = '3';
+let couponsVersion = '4';
 let modalCallback = null;
 
 function openModalOverlay(overlayId) {
@@ -1626,10 +1461,21 @@ function getHash(string) {
 }
 
 let defaultCoupons = {
+    // === Старые ===
     "OQEXX-BETA-30DAYS": 30, "OQEXX-OPEN-OBT": 30, "OQEXX-TEST-5DAYS": 5, "OQEXX-VIP-YEAR": 365,
     "OQEXX-10D-K8F2": 10, "OQEXX-10D-M5T4": 10, "OQEXX-10D-X7R9": 10, "OQEXX-10D-P2W1": 10, "OQEXX-10D-B6N3": 10,
     "OQEXX-5D-R2W9": 5, "OQEXX-5D-M4K1": 5, "OQEXX-5D-X8B6": 5, "OQEXX-5D-P3T7": 5, "OQEXX-5D-J5N2": 5,
-    "OQEXX-5D-L7F4": 5, "OQEXX-5D-C1Z8": 5, "OQEXX-5D-K9V3": 5, "OQEXX-5D-H6Q2": 5, "OQEXX-5D-B4W7": 5
+    "OQEXX-5D-L7F4": 5, "OQEXX-5D-C1Z8": 5, "OQEXX-5D-K9V3": 5, "OQEXX-5D-H6Q2": 5, "OQEXX-5D-B4W7": 5,
+
+    // === 🆕 НОВЫЕ КУПОНЫ ===
+    "OQEXX-REBORN-7D": 7,        // Возвращение после паузы — 7 дней
+    "OQEXX-COMEBACK-14D": 14,    // Приветственный после простоя — 14 дней
+    "OQEXX-OBT-2026-30D": 30,    // Открытый бета-тест 2026 — 30 дней
+    "OQEXX-FALL-15D": 15,        // Осенний ивент — 15 дней
+    "OQEXX-HALLOWEEN-31D": 31,   // 🎃 Хэллоуин — 31 день
+    "OQEXX-NEWYEAR-60D": 60,     // 🎄 Новогодний — 60 дней
+    "OQEXX-PRIME-90D": 90,       // Прайм-подписка — 90 дней
+    "OQEXX-LEGEND-180D": 180     // Легендарный — 180 дней
 };
 
 if (localStorage.getItem("oqexx_coupons_version") !== couponsVersion) {
