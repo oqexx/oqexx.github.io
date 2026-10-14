@@ -798,7 +798,243 @@ textarea:focus {
     
     </style>
 </head>
-<body>
+
+<!-- ═══════════ ЗАГЛУШКА "САЙТ НА ПАУЗЕ" ═══════════ -->
+<div id="pauseScreen">
+    <div class="ps-bg"></div>
+    <div class="ps-box">
+        <div class="ps-icon">🔧</div>
+        <h1 class="ps-title">Сайт временно на паузе</h1>
+        <p class="ps-desc">
+            Привет! На связи Никита 👋<br>
+            Сейчас я занят по личным делам и не могу следить за проектом и обновлять сайт.
+            Вернусь через <strong>3 дня</strong> — всё снова заработает, обновления и купоны тоже.
+            Спасибо за понимание и что вы с нами ❤️
+        </p>
+
+        <div class="ps-timer">
+            <div class="ps-cell"><span id="psDays">0</span><small>дней</small></div>
+            <div class="ps-cell"><span id="psHours">00</span><small>часов</small></div>
+            <div class="ps-cell"><span id="psMins">00</span><small>минут</small></div>
+            <div class="ps-cell"><span id="psSecs">00</span><small>секунд</small></div>
+        </div>
+
+        <div class="ps-status">
+            <span class="ps-dot"></span> Ожидаю возвращения разработчика
+        </div>
+    </div>
+</div>
+
+<style>
+#pauseScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 999999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: #060709;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow: hidden;
+}
+
+/* Фоновое свечение */
+#pauseScreen .ps-bg {
+    position: absolute;
+    inset: -40%;
+    background: radial-gradient(circle at 30% 30%, rgba(81,88,226,0.30), transparent 45%),
+                radial-gradient(circle at 70% 70%, rgba(166,81,226,0.22), transparent 45%);
+    animation: psBgSpin 22s linear infinite;
+    pointer-events: none;
+}
+@keyframes psBgSpin { to { transform: rotate(360deg); } }
+
+#pauseScreen .ps-box {
+    position: relative;
+    z-index: 2;
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+    background: linear-gradient(135deg, #0d0f18 0%, #141828 50%, #0a0c14 100%);
+    border: 1px solid rgba(81, 88, 226, 0.35);
+    border-radius: 28px;
+    padding: 48px 36px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.85),
+                0 0 90px rgba(81,88,226,0.25),
+                inset 0 0 40px rgba(81,88,226,0.08);
+    animation: psPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes psPop {
+    from { opacity: 0; transform: scale(0.9) translateY(24px); filter: blur(6px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+}
+
+#pauseScreen .ps-icon {
+    font-size: 68px;
+    line-height: 1;
+    margin-bottom: 18px;
+    display: inline-block;
+    animation: psFloat 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 25px rgba(81,88,226,0.7));
+}
+@keyframes psFloat {
+    0%, 100% { transform: translateY(0) rotate(-8deg); }
+    50%      { transform: translateY(-12px) rotate(8deg); }
+}
+
+#pauseScreen .ps-title {
+    margin: 0 0 16px 0;
+    font-size: 30px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff 30%, #767df5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#pauseScreen .ps-desc {
+    margin: 0 auto 32px auto;
+    max-width: 460px;
+    color: #8A92A6;
+    font-size: 15px;
+    line-height: 1.7;
+}
+#pauseScreen .ps-desc strong { color: #fff; }
+
+/* Таймер */
+#pauseScreen .ps-timer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+}
+#pauseScreen .ps-cell {
+    background: rgba(19, 22, 31, 0.9);
+    border: 1px solid #1e2230;
+    border-radius: 14px;
+    padding: 16px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+#pauseScreen .ps-cell span {
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 18px rgba(81,88,226,0.55);
+}
+#pauseScreen .ps-cell small {
+    font-size: 10px;
+    color: #7e8799;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+/* Плашка статуса */
+#pauseScreen .ps-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 22px;
+    background: rgba(255, 177, 27, 0.08);
+    border: 1px solid rgba(255, 177, 27, 0.3);
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffb11b;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    animation: psStatusPulse 2s ease-in-out infinite;
+}
+@keyframes psStatusPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,177,27,0.4); }
+    50%      { box-shadow: 0 0 0 9px rgba(255,177,27,0); }
+}
+#pauseScreen .ps-dot {
+    width: 8px; height: 8px;
+    background: #ffb11b;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #ffb11b;
+    animation: psDotBlink 1.2s ease-in-out infinite;
+}
+@keyframes psDotBlink {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.75); }
+}
+
+@media (max-width: 520px) {
+    #pauseScreen .ps-box { padding: 36px 22px; border-radius: 22px; }
+    #pauseScreen .ps-title { font-size: 23px; }
+    #pauseScreen .ps-icon { font-size: 54px; }
+    #pauseScreen .ps-desc { font-size: 14px; }
+    #pauseScreen .ps-timer { gap: 8px; }
+    #pauseScreen .ps-cell { padding: 12px 4px; border-radius: 10px; }
+    #pauseScreen .ps-cell span { font-size: 21px; }
+    #pauseScreen .ps-cell small { font-size: 9px; letter-spacing: 0.5px; }
+}
+</style>
+
+<script>
+(function () {
+    // ═══ ЗДЕСЬ МЕНЯЕШЬ ДАТУ ВОЗВРАЩЕНИЯ ═══
+    // Формат: "YYYY-MM-DDTHH:MM:SS" (по твоему локальному времени)
+    const RETURN_DATE = "2026-10-17T12:00:00"; // ← поставь свою дату
+
+    // Ключ, чтобы не сбрасывать таймер при каждой перезагрузке
+    const STORAGE_KEY = "oqexx_pause_until";
+
+    let endTime = localStorage.getItem(STORAGE_KEY);
+    if (!endTime) {
+        endTime = new Date(RETURN_DATE).getTime();
+        localStorage.setItem(STORAGE_KEY, endTime);
+    } else {
+        endTime = parseInt(endTime);
+    }
+
+    const screen = document.getElementById("pauseScreen");
+
+    function tick() {
+        const now = Date.now();
+        const left = endTime - now;
+
+        if (left <= 0) {
+            // Время вышло — прячем заглушку
+            screen.style.transition = "opacity 0.8s ease, transform 0.8s ease";
+            screen.style.opacity = "0";
+            screen.style.transform = "scale(1.05)";
+            setTimeout(function () {
+                screen.remove();
+                localStorage.removeItem(STORAGE_KEY);
+                document.body.style.overflow = "";
+            }, 800);
+            clearInterval(timerId);
+            return;
+        }
+
+        const d = Math.floor(left / (1000 * 60 * 60 * 24));
+        const h = Math.floor((left % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((left % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((left % (1000 * 60)) / 1000);
+
+        document.getElementById("psDays").innerText  = d;
+        document.getElementById("psHours").innerText = String(h).padStart(2, "0");
+        document.getElementById("psMins").innerText  = String(m).padStart(2, "0");
+        document.getElementById("psSecs").innerText  = String(s).padStart(2, "0");
+    }
+
+    // Блокируем прокрутку тела под заглушкой
+    document.body.style.overflow = "hidden";
+
+    tick();
+    const timerId = setInterval(tick, 1000);
+})();
+</script>
+<!-- ═══════════ КОНЕЦ ЗАГЛУШКИ ═══════════ -->    
+    
+    <body>
 <div id="mainBlock">
     <!-- ОКНО АВТОРИЗАЦИИ -->
     <div id="authBlock" style="max-width: 440px; margin: 40px auto; padding: 10px 0;">
