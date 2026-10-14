@@ -979,45 +979,46 @@ textarea:focus {
 
 <script>
 (function () {
-    // ═══ ЗДЕСЬ МЕНЯЕШЬ ДАТУ ВОЗВРАЩЕНИЯ ═══
-    // Формат: "YYYY-MM-DDTHH:MM:SS" (по твоему локальному времени)
-    const RETURN_DATE = "2026-10-17T12:00:00"; // ← поставь свою дату
+    // Сколько времени показывать заглушку (в днях от текущего момента)
+    const DAYS = 3;
 
-    // Ключ, чтобы не сбрасывать таймер при каждой перезагрузке
-    const STORAGE_KEY = "oqexx_pause_until";
+    // Фиксированная точка отсчёта — привязывается к первому открытию,
+    // чтобы таймер не сбрасывался при каждом обновлении страницы
+    const START_KEY = "oqexx_pause_start";
 
-    let endTime = localStorage.getItem(STORAGE_KEY);
-    if (!endTime) {
-        endTime = new Date(RETURN_DATE).getTime();
-        localStorage.setItem(STORAGE_KEY, endTime);
+    let startTime = localStorage.getItem(START_KEY);
+    if (!startTime) {
+        startTime = Date.now();
+        localStorage.setItem(START_KEY, startTime);
     } else {
-        endTime = parseInt(endTime);
+        startTime = parseInt(startTime);
     }
 
+    const endTime = startTime + DAYS * 24 * 60 * 60 * 1000;
+
     const screen = document.getElementById("pauseScreen");
+    if (!screen) return;
 
     function tick() {
-        const now = Date.now();
-        const left = endTime - now;
+        const left = endTime - Date.now();
 
         if (left <= 0) {
-            // Время вышло — прячем заглушку
             screen.style.transition = "opacity 0.8s ease, transform 0.8s ease";
             screen.style.opacity = "0";
             screen.style.transform = "scale(1.05)";
             setTimeout(function () {
                 screen.remove();
-                localStorage.removeItem(STORAGE_KEY);
+                localStorage.removeItem(START_KEY);
                 document.body.style.overflow = "";
             }, 800);
             clearInterval(timerId);
             return;
         }
 
-        const d = Math.floor(left / (1000 * 60 * 60 * 24));
-        const h = Math.floor((left % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const m = Math.floor((left % (1000 * 60 * 60)) / (1000 * 60));
-        const s = Math.floor((left % (1000 * 60)) / 1000);
+        const d = Math.floor(left / 86400000);
+        const h = Math.floor((left % 86400000) / 3600000);
+        const m = Math.floor((left % 3600000) / 60000);
+        const s = Math.floor((left % 60000) / 1000);
 
         document.getElementById("psDays").innerText  = d;
         document.getElementById("psHours").innerText = String(h).padStart(2, "0");
@@ -1025,7 +1026,6 @@ textarea:focus {
         document.getElementById("psSecs").innerText  = String(s).padStart(2, "0");
     }
 
-    // Блокируем прокрутку тела под заглушкой
     document.body.style.overflow = "hidden";
 
     tick();
