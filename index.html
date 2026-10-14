@@ -799,7 +799,251 @@ textarea:focus {
     </style>
 </head>
 
+<!-- ═══════════ ПОСТОЯННОЕ УВЕДОМЛЕНИЕ OQEXX ═══════════ -->
+<div id="oqexxTopBar">
+    <!-- Верхняя строка: новость про МВД/Росгвардию -->
+    <div class="otb-news">
+        <div class="otb-news-inner">
+            <span class="otb-badge">🚨 СКОРО</span>
+            <span class="otb-text">
+                В <strong>Oqexx Software</strong> скоро добавят структуры
+                <strong>МВД</strong> и <strong>Росгвардии</strong> — новые фракции, формы, автопарк и функционал.
+                Следи за обновлениями в Discord!
+            </span>
+            <span class="otb-badge otb-badge-right">🔥 NEW</span>
+        </div>
+    </div>
 
+    <!-- Нижняя строка: сайт открылся -->
+    <div class="otb-open">
+        <span class="otb-open-icon">✅</span>
+        <span class="otb-open-text"><strong>Сайт снова работает!</strong> Тех. работы завершены — купоны и генерация ключей доступны.</span>
+        <button class="otb-close" onclick="closeSiteOpenBanner()" title="Закрыть">✕</button>
+    </div>
+</div>
+
+<style>
+#oqexxTopBar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999999;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transform: translateY(-100%);
+    animation: otbSlideDown 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+@keyframes otbSlideDown {
+    to { transform: translateY(0); }
+}
+
+/* ═══ ВЕРХНЯЯ СТРОКА — НОВОСТЬ ПРО МВД/РОСГВАРДИЮ (ПОСТОЯННАЯ) ═══ */
+#oqexxTopBar .otb-news {
+    position: relative;
+    background: linear-gradient(135deg, #0a1220 0%, #0f1a35 50%, #071018 100%);
+    border-bottom: 1px solid rgba(81, 88, 226, 0.4);
+    overflow: hidden;
+}
+#oqexxTopBar .otb-news::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(81, 88, 226, 0.12) 30%,
+        rgba(255, 51, 68, 0.10) 50%,
+        rgba(81, 88, 226, 0.12) 70%,
+        transparent 100%);
+    background-size: 200% auto;
+    animation: otbShimmer 5s linear infinite;
+    pointer-events: none;
+}
+@keyframes otbShimmer {
+    from { background-position: 200% center; }
+    to   { background-position: -200% center; }
+}
+
+#oqexxTopBar .otb-news-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 12px 40px;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+#oqexxTopBar .otb-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 11px;
+    background: linear-gradient(135deg, #ff3344, #ff6b3d);
+    color: #fff;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    box-shadow: 0 0 18px rgba(255, 51, 68, 0.55);
+    animation: otbBadgePulse 1.6s ease-in-out infinite;
+}
+@keyframes otbBadgePulse {
+    0%, 100% { box-shadow: 0 0 18px rgba(255, 51, 68, 0.55); }
+    50%      { box-shadow: 0 0 28px rgba(255, 51, 68, 0.9); transform: scale(1.05); }
+}
+
+#oqexxTopBar .otb-badge-right {
+    background: linear-gradient(135deg, #ffb11b, #ff7b00);
+    box-shadow: 0 0 18px rgba(255, 177, 27, 0.55);
+    animation: otbBadgePulseOrange 1.6s ease-in-out infinite;
+}
+@keyframes otbBadgePulseOrange {
+    0%, 100% { box-shadow: 0 0 18px rgba(255, 177, 27, 0.55); }
+    50%      { box-shadow: 0 0 28px rgba(255, 177, 27, 0.9); transform: scale(1.05); }
+}
+
+#oqexxTopBar .otb-text {
+    color: #cfd6e4;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.2px;
+}
+#oqexxTopBar .otb-text strong {
+    color: #fff;
+    font-weight: 800;
+    text-shadow: 0 0 14px rgba(81, 88, 226, 0.6);
+}
+
+/* ═══ НИЖНЯЯ СТРОКА — САЙТ ОТКРЫЛСЯ ═══ */
+#oqexxTopBar .otb-open {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 22px;
+    background: linear-gradient(135deg, #0d1117 0%, #14251c 50%, #0a1410 100%);
+    border-bottom: 1px solid rgba(0, 255, 102, 0.25);
+}
+#oqexxTopBar .otb-open::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 1.5px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, #00ff66, #5158e2, #00ff66, transparent);
+    background-size: 200% auto;
+    animation: otbShimmer 3s linear infinite;
+}
+
+#oqexxTopBar .otb-open-icon {
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+    animation: otbIconPulse 1.8s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 102, 0.7));
+}
+@keyframes otbIconPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.15); }
+}
+
+#oqexxTopBar .otb-open-text {
+    flex: 1;
+    color: #b8c0cf;
+    font-size: 12.5px;
+    line-height: 1.4;
+    min-width: 0;
+}
+#oqexxTopBar .otb-open-text strong {
+    color: #00ff66;
+    font-weight: 800;
+    text-shadow: 0 0 12px rgba(0, 255, 102, 0.45);
+}
+
+#oqexxTopBar .otb-close {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: #8A92A6;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+}
+#oqexxTopBar .otb-close:hover {
+    background: rgba(255, 51, 68, 0.15);
+    border-color: rgba(255, 51, 68, 0.4);
+    color: #ff3344;
+    transform: rotate(90deg);
+}
+
+/* Мобилка */
+@media (max-width: 640px) {
+    #oqexxTopBar .otb-news-inner { padding: 10px 14px; gap: 8px; }
+    #oqexxTopBar .otb-text { font-size: 11.5px; }
+    #oqexxTopBar .otb-badge { font-size: 9px; padding: 3px 8px; }
+    #oqexxTopBar .otb-badge-right { display: none; }
+    #oqexxTopBar .otb-open { padding: 8px 14px; gap: 9px; }
+    #oqexxTopBar .otb-open-icon { font-size: 15px; }
+    #oqexxTopBar .otb-open-text { font-size: 11px; }
+    #oqexxTopBar .otb-close { width: 24px; height: 24px; font-size: 11px; }
+}
+</style>
+
+<script>
+(function () {
+    const OPEN_KEY = "oqexx_siteopen_row_closed";
+
+    // Если нижнюю строку (про открытие) уже закрывали — прячем её
+    if (localStorage.getItem(OPEN_KEY) === "1") {
+        const openRow = document.querySelector("#oqexxTopBar .otb-open");
+        if (openRow) openRow.remove();
+    }
+
+    // Сдвигаем контент вниз, чтобы шапка не перекрывала сайт
+    function adjustPadding() {
+        const bar = document.getElementById("oqexxTopBar");
+        if (!bar) return;
+        const h = bar.offsetHeight;
+        document.body.style.paddingTop = h + "px";
+    }
+    window.addEventListener("resize", adjustPadding);
+    setTimeout(adjustPadding, 100);
+    setTimeout(adjustPadding, 900);
+})();
+
+function closeSiteOpenBanner() {
+    const openRow = document.querySelector("#oqexxTopBar .otb-open");
+    if (!openRow) return;
+    openRow.style.transition = "opacity 0.4s ease, transform 0.4s ease, max-height 0.4s ease";
+    openRow.style.opacity = "0";
+    openRow.style.transform = "translateY(-10px)";
+    openRow.style.maxHeight = "0";
+    openRow.style.paddingTop = "0";
+    openRow.style.paddingBottom = "0";
+    openRow.style.overflow = "hidden";
+    setTimeout(function () {
+        openRow.remove();
+        // Пересчитываем padding, т.к. высота шапки изменилась
+        const bar = document.getElementById("oqexxTopBar");
+        if (bar) document.body.style.paddingTop = bar.offsetHeight + "px";
+    }, 420);
+    localStorage.setItem("oqexx_siteopen_row_closed", "1");
+}
+</script>
+<!-- ═══════════ КОНЕЦ УВЕДОМЛЕНИЯ ═══════════ -->
     
     <body>
 
