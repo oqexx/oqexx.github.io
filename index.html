@@ -1896,9 +1896,14 @@ function closeSiteOpenBanner() {
     </div>
 </div>
 
+
+            
+<script>
+let isRegisterMode = false;
 function togglePassword() {
     const p = document.getElementById("password");
     const btn = document.getElementById("eyeBtn");
+    if (!p || !btn) return;
     if (p.type === "password") {
         p.type = "text";
         btn.innerText = "🙈";
@@ -1909,9 +1914,6 @@ function togglePassword() {
         btn.style.color = "var(--text-muted)";
     }
 }
-            
-<script>
-let isRegisterMode = false;
 let currentUser = "";
 let couponsVersion = '4';
 let modalCallback = null;
@@ -2029,9 +2031,28 @@ function uiPrompt(title, message, callback) {
 
 function closeCustomModal(success) {
     let inputVal = document.getElementById("modalInput").value;
-    closeModalOverlay("customModal", function() { if (modalCallback) { if (success) modalCallback(inputVal ? inputVal : true); else modalCallback(false); } });
-}
+    closeModalOverlay("customModal", function() {
+        // Восстанавливаем кнопки после окна "Мой пароль"
+        let confirmBtn = document.getElementById("modalConfirmBtn");
+        let cancelBtn = document.getElementById("modalCancelBtn");
+        let input = document.getElementById("modalInput");
+        confirmBtn.innerText = "Подтвердить";
+        confirmBtn.onclick = function() { closeCustomModal(true); };
+        cancelBtn.innerText = "Отмена";
+        cancelBtn.style.display = "block";
+        input.readOnly = false;
+        input.type = "text";
+        input.style.letterSpacing = "";
+        input.style.fontFamily = "";
+        input.style.fontWeight = "";
+        input.style.color = "";
 
+        if (modalCallback) {
+            if (success) modalCallback(inputVal ? inputVal : true);
+            else modalCallback(false);
+        }
+    });
+}
 function loginViaDiscord() { uiAlert("Авторизация недоступна", "Вход через Discord временно отключен разработчиком из-за проведения технических работ на стороне API. Пожалуйста, используйте стандартную форму входа."); }
 
 function toggleAuthMode() {
@@ -2241,6 +2262,7 @@ async function processAuth() {
                 created_at: Date.now()
             });
 
+            localStorage.setItem("oqexx_saved_pass_" + user.uid, p);
             uiAlert("Успех", "Аккаунт создан! Теперь войди.");
             toggleAuthMode();
         } else {
@@ -3015,6 +3037,41 @@ function applyBackgroundToProfile(bgId) {
 <div id="moonField"></div>
 
 <script>
+
+function showMyPassword() {
+    const pass = localStorage.getItem("oqexx_saved_pass_" + currentUser);
+    if (!pass) {
+        uiAlert("Пароль не найден", "Ты вошёл через Discord или пароль не был сохранён на этом устройстве. Зайди через форму логина, чтобы сохранить его.");
+        return;
+    }
+
+    document.getElementById("modalTitle").innerText = "🔑 Ваш пароль";
+    document.getElementById("modalDesc").innerText = "Пароль для аккаунта " + (localStorage.getItem("oqexx_session_email") || currentUser);
+    
+    let input = document.getElementById("modalInput");
+    input.value = pass;
+    input.type = "text";
+    input.readOnly = true;
+    input.style.letterSpacing = "2px";
+    input.style.fontFamily = "monospace";
+    input.style.fontWeight = "600";
+    input.style.color = "#00ff66";
+    input.style.display = "block";
+
+    document.getElementById("modalCancelBtn").style.display = "block";
+    document.getElementById("modalCancelBtn").innerText = "Скрыть";
+
+    let confirmBtn = document.getElementById("modalConfirmBtn");
+    confirmBtn.innerText = "📋 Скопировать";
+    confirmBtn.onclick = function() {
+        navigator.clipboard.writeText(pass);
+        closeModalOverlay("customModal");
+        setTimeout(() => uiAlert("Скопировано", "Пароль скопирован в буфер обмена!"), 400);
+    };
+
+    openModalOverlay("customModal");
+}
+
 (function makeMoonField() {
     const field = document.getElementById("moonField");
     if (!field) return;
