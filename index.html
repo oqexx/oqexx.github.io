@@ -2263,6 +2263,7 @@ function openDashboard() {
             const data = snap.val() || {};
             
             const isAdmin = (data.role === "admin") || (data.username === "oqexx");
+            window.isAdminUser = isAdmin;
             
             // Админ-контролы
             let ap = document.getElementById("adminControls");
@@ -2534,7 +2535,7 @@ function updateReportsUI() {
     
     let reports = localStorage.getItem("oqexx_tickets") ? JSON.parse(localStorage.getItem("oqexx_tickets")) : [];
     
-    if (currentUser === "oqexx") {
+   if (window.isAdminUser === true) {
         userBlock.style.display = "none";
         adminBlock.style.display = "block";
         
