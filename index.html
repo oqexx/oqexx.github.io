@@ -2250,7 +2250,7 @@ async function processAuth() {
 
             // Пишем данные юзера в базу
             await set(ref(db, "users/" + user.uid), {
-            localStorage.setItem("oqexx_saved_pass_" + user.uid, p);
+            
                 email: email,
                 username: u.toLowerCase(),
                 hwid: "",
