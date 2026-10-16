@@ -1583,6 +1583,217 @@ function closeSiteOpenBanner() {
 
 
                 <div id="serverStatusText" class="status-panel">Сервера синхронизированы</div>
+                <!-- ═══════════ БОКОВЫЕ ВИДЖЕТЫ ═══════════ -->
+
+<!-- Виджет 1: Онлайн-статистика сервера -->
+<div class="sidebar-widget">
+    <div class="sw-header">
+        <span class="sw-dot online"></span>
+        <span class="sw-title">Статус сервера</span>
+    </div>
+    <div class="sw-row">
+        <span class="sw-label">Пинг</span>
+        <span class="sw-value" style="color: #00ff66;">12 мс</span>
+    </div>
+    <div class="sw-row">
+        <span class="sw-label">Онлайн</span>
+        <span class="sw-value" style="color: #767df5;">247 игроков</span>
+    </div>
+    <div class="sw-row">
+        <span class="sw-label">Версия</span>
+        <span class="sw-value">v1.1</span>
+    </div>
+</div>
+
+<!-- Виджет 2: Быстрые ссылки -->
+<div class="sidebar-widget">
+    <div class="sw-header">
+        <span class="sw-dot purple"></span>
+        <span class="sw-title">Быстрые ссылки</span>
+    </div>
+    <a href="https://discord.gg/eHz5Pzn394" target="_blank" class="sw-link">
+        <span class="sw-link-icon" style="background: rgba(88,101,242,0.15); color: #5865F2;">💬</span>
+        <span class="sw-link-text">Discord-канал</span>
+        <span class="sw-link-arrow">→</span>
+    </a>
+    <a href="https://github.com/oqexx" target="_blank" class="sw-link">
+        <span class="sw-link-icon" style="background: rgba(255,255,255,0.08); color: #fff;">💻</span>
+        <span class="sw-link-text">GitHub проекта</span>
+        <span class="sw-link-arrow">→</span>
+    </a>
+    <a href="#" onclick="uiAlert('Помощь', 'Инструкция находится ниже в разделе F.A.Q. Прокрути страницу вниз.'); return false;" class="sw-link">
+        <span class="sw-link-icon" style="background: rgba(0,255,102,0.12); color: #00ff66;">❓</span>
+        <span class="sw-link-text">Помощь / F.A.Q.</span>
+        <span class="sw-link-arrow">→</span>
+    </a>
+</div>
+
+<!-- Виджет 3: Следующее обновление -->
+<div class="sidebar-widget sidebar-widget-accent">
+    <div class="sw-header">
+        <span class="sw-dot orange"></span>
+        <span class="sw-title">Скоро в софте</span>
+    </div>
+    <div class="sw-feature">
+        <div class="sw-feature-emoji">🚔</div>
+        <div>
+            <div class="sw-feature-title">МВД и Росгвардия</div>
+            <div class="sw-feature-desc">Новые фракции + автопарк</div>
+        </div>
+    </div>
+    <div class="sw-feature">
+        <div class="sw-feature-emoji">🎯</div>
+        <div>
+            <div class="sw-feature-title">Новые структуры</div>
+            <div class="sw-feature-desc">ФСБ, Прокуратура</div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* ═══ БОКОВЫЕ ВИДЖЕТЫ ═══ */
+.sidebar-widget {
+    background: rgba(19, 22, 31, 0.6);
+    border: 1px solid #1e2230;
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sidebar-widget:hover {
+    border-color: rgba(81, 88, 226, 0.4);
+    background: rgba(19, 22, 31, 0.9);
+}
+
+.sidebar-widget-accent {
+    background: linear-gradient(135deg, rgba(81, 88, 226, 0.08), rgba(166, 81, 226, 0.05));
+    border-color: rgba(81, 88, 226, 0.3);
+}
+
+.sw-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 4px;
+}
+.sw-title {
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sw-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.sw-dot.online {
+    background: #00ff66;
+    box-shadow: 0 0 10px #00ff66;
+    animation: swPulse 1.6s ease-in-out infinite;
+}
+.sw-dot.purple {
+    background: #a651e2;
+    box-shadow: 0 0 10px #a651e2;
+}
+.sw-dot.orange {
+    background: #ffb11b;
+    box-shadow: 0 0 10px #ffb11b;
+    animation: swPulse 1.6s ease-in-out infinite;
+}
+@keyframes swPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.5; transform: scale(0.8); }
+}
+
+.sw-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12.5px;
+    padding: 3px 0;
+}
+.sw-label { color: #7e8799; }
+.sw-value { color: #fff; font-weight: 600; }
+
+/* Ссылки */
+.sw-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 9px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+.sw-link:hover {
+    background: rgba(81, 88, 226, 0.08);
+    border-color: rgba(81, 88, 226, 0.25);
+    transform: translateX(3px);
+}
+.sw-link-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+.sw-link-text {
+    flex: 1;
+    color: #cfd6e4;
+    font-size: 12.5px;
+    font-weight: 600;
+}
+.sw-link-arrow {
+    color: #5158e2;
+    font-size: 14px;
+    font-weight: 800;
+    transition: transform 0.2s;
+}
+.sw-link:hover .sw-link-arrow {
+    transform: translateX(3px);
+    color: #fff;
+}
+
+/* Фичи "скоро" */
+.sw-feature {
+    display: flex;
+    gap: 11px;
+    align-items: center;
+    padding: 8px;
+    border-radius: 9px;
+    transition: background 0.2s;
+}
+.sw-feature:hover { background: rgba(255, 255, 255, 0.03); }
+.sw-feature-emoji {
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 8px rgba(81, 88, 226, 0.5));
+}
+.sw-feature-title {
+    color: #fff;
+    font-size: 12.5px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+.sw-feature-desc {
+    color: #7e8799;
+    font-size: 11px;
+    line-height: 1.3;
+}
+</style>
                 
                 <div id="adminControls" style="display: none; width: 100%;">
                     <button id="freezeBtn" class="btn-primary btn-danger" onclick="handleFreezeClick()" style="margin-bottom: 15px;">🔴 ЗАМОРОЗИТЬ ПРОЕКТ</button>
