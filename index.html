@@ -2157,7 +2157,118 @@ function closeSiteOpenBanner() {
             
 <script>
 let isRegisterMode = false;
-function togglePassword() {
+// ═══════════ ЗВУКИ ПРИ КЛИКЕ ═══════════
+function playSound(type) {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const now = ctx.currentTime;
+        
+        if (type === "click") {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(880, now);
+            osc.frequency.exponentialRampToValueAtTime(440, now + 0.08);
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.1);
+        }
+        
+        if (type === "success") {
+            [0, 0.08].forEach(function(delay, i) {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(i === 0 ? 660 : 990, now + delay);
+                gain.gain.setValueAtTime(0.14, now + delay);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.15);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now + delay);
+                osc.stop(now + delay + 0.15);
+            });
+        }
+        
+        if (type === "error") {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = "square";
+            osc.frequency.setValueAtTime(220, now);
+            osc.frequency.exponentialRampToValueAtTime(110, now + 0.18);
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.2);
+        }
+        
+        if (type === "modal") {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(440, now);
+            osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+            gain.gain.setValueAtTime(0.1, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.15);
+        }
+    } catch (e) {
+        console.warn("Звук не сработал:", e);
+    }
+}
+
+// Автонавешивание звука на кнопки и ссылки
+document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(function() {
+        document.querySelectorAll("button").forEach(function(btn) {
+            if (btn.dataset.soundBound) return;
+            btn.dataset.soundBound = "1";
+            btn.addEventListener("click", function() {
+                if (btn.disabled) return;
+                if (btn.innerText.toLowerCase().includes("выйти")) {
+                    playSound("error");
+                } else {
+                    playSound("click");
+                }
+            });
+        });
+        
+        document.querySelectorAll("a[target='_blank'], a[download]").forEach(function(a) {
+            if (a.dataset.soundBound) return;
+            a.dataset.soundBound = "1";
+            a.addEventListener("click", function() { playSound("click"); });
+        });
+    }, 500);
+});
+
+// Модалки — звук при открытии
+const __origUiAlert = window.uiAlert;
+window.uiAlert = function(title, msg) {
+    playSound("modal");
+    return __origUiAlert ? __origUiAlert(title, msg) : null;
+};
+
+const __origUiConfirm = window.uiConfirm;
+window.uiConfirm = function(title, msg, cb) {
+    playSound("modal");
+    return __origUiConfirm ? __origUiConfirm(title, msg, cb) : null;
+};
+
+const __origUiPrompt = window.uiPrompt;
+window.uiPrompt = function(title, msg, cb) {
+    playSound("modal");
+    return __origUiPrompt ? __origUiPrompt(title, msg, cb) : null;
+};
+// ═══════════ КОНЕЦ ЗВУКОВ ═══════════
+    
+    function togglePassword() {
     const p = document.getElementById("password");
     const btn = document.getElementById("eyeBtn");
     if (!p || !btn) return;
